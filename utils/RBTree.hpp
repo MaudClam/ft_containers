@@ -114,12 +114,12 @@ struct RBNode {
 
 }; /* struct RBNode end */
 
-template<typename T>
-std::ostream& operator<<(std::ostream& o, ft::RBNode<T>& node) {
-	o << node.value << (node.color == RED ? "r" : "B");
-	return o;
-}
-
+//template<typename T>
+//std::ostream& operator<<(std::ostream& o, ft::RBNode<T>& node) {
+//	o << node.value << (node.color == RED ? "r" : "B");
+//	return o;
+//}
+//
 template<
 	typename T,
 	typename Compare = std::less<T>,
@@ -155,17 +155,8 @@ public:
 
 	/* Other member functions */
 	
-	node_pointer	findNode(const value_type value) {
-		node_pointer node = root;
-		while (node != NULL) {
-			if ( !compare(value, node->value) && !compare(node->value, value) )
-				break ;
-			else if ( compare(value, node->value) )
-				node = node->left;
-			else
-				node = node->right;
-		}
-		return (node);
+	size_type		get_size() {
+		return ( size.size );
 	}
 	
 	void			insertNode(const value_type& value) {
@@ -208,6 +199,51 @@ public:
 		}
 	}
 	
+	node_pointer	findNode(const value_type value) {
+		node_pointer node = root;
+		while (node != NULL) {
+			if ( !compare(value, node->value) && !compare(node->value, value) )
+				break ;
+			else if ( compare(value, node->value) )
+				node = node->left;
+			else
+				node = node->right;
+		}
+		return (node);
+	}
+	
+	node_pointer	findMin(void) { return ( findMinNode(root) ); }
+	
+	node_pointer	findMax(void) { return ( findMaxNode(root) ); }
+	
+	node_pointer	findNextNode(node_pointer node) {
+		if (node != NULL) {
+			if (node->right != NULL)
+				return (findMinNode(node->right));
+			while (node->parent != NULL) {
+				if (node == node->parent->left)
+					return (node->parent);
+				node = node->parent;
+			}
+		}
+		return (NULL);
+	}
+
+	node_pointer	findPreviousNode(node_pointer node) {
+		if (node != NULL) {
+			if (node->left != NULL)
+				return (findMaxNode(node->left));
+			while (node->parent != NULL) {
+				if (node == node->parent->right)
+					return (node->parent);
+				node = node->parent;
+			}
+		}
+		return (NULL);
+	}
+	
+	
+
 private:
 	
 	void			deleteOneChild(node_pointer node) {
@@ -288,32 +324,6 @@ private:
 		return (node);
 	}
 	
-	node_pointer	findNextNode(node_pointer node) {
-		if (node != NULL) {
-			if (node->right != NULL)
-				return (findMinNode(node->right));
-			while (node->parent != NULL) {
-				if (node == node->parent->left)
-					return (node->parent);
-				node = node->parent;
-			}
-		}
-		return (NULL);
-	}
-
-	node_pointer	findPreviousNode(node_pointer node) {
-		if (node != NULL) {
-			if (node->left != NULL)
-				return (findMaxNode(node->left));
-			while (node->parent != NULL) {
-				if (node == node->parent->right)
-					return (node->parent);
-				node = node->parent;
-			}
-		}
-		return (NULL);
-	}
-
 	void			rotateLeft(node_pointer node) {
 		node_pointer	pivot = node->right;
 		

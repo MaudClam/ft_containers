@@ -30,7 +30,35 @@ using conditional_t = typename conditional<B,T,F>::type;
 
 /* Implementation std::conditional_t end */
 
+/* Implementation std::is_same */
 
+template< typename U, typename V >
+struct is_same {
+	static const bool value = false;
+};
+
+template< typename U >
+struct is_same< U, U > {
+	static const bool value = true;
+};
+
+template< typename U, typename V >
+using is_same_v = typename is_same<U,V>::value;
+
+template <typename T>
+struct remove_const {
+	using type = T;
+};
+
+template <typename T>
+struct remove_const <const T> {
+	using type = T;
+};
+
+template< typename T >
+using remove_const_t = typename remove_const<T>::type;
+
+/* Implementation std::is_same  end */
 
 } /* namespace ft end */
 

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		66836BD8294C642A005C326E /* utils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 66FF6612294A43370043BF57 /* utils.hpp */; };
+		66836BD9294C642F005C326E /* pair.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 66FF65EB294350660043BF57 /* pair.hpp */; };
 		66FF65C5293CA7A10043BF57 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66FF65C4293CA7A10043BF57 /* main.cpp */; settings = {COMPILER_FLAGS = "-Wall -Wextra -Werror -std=c++98"; }; };
 		66FF65FC29435B1E0043BF57 /* pair.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 66FF65EB294350660043BF57 /* pair.hpp */; };
 		66FF65FD29435B280043BF57 /* pair_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66FF65EE29435A850043BF57 /* pair_test.cpp */; settings = {COMPILER_FLAGS = "-Wall -Wextra -Werror -std=c++98"; }; };
@@ -149,6 +151,8 @@
 			files = (
 				66FF6628294A4AD30043BF57 /* iterator.hpp in Headers */,
 				66FF6610294A2E340043BF57 /* map.hpp in Headers */,
+				66836BD8294C642A005C326E /* utils.hpp in Headers */,
+				66836BD9294C642F005C326E /* pair.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
