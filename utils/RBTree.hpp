@@ -20,6 +20,7 @@
 # define INDENT	":   "
 
 # include <iostream>
+# include "pair.hpp"
 # include "iterator.hpp"
 
 namespace ft {
@@ -29,8 +30,18 @@ struct RBSize {
 	typedef T		size_type;
 	size_type		size, nodes, reds, blacks;
 	bool			is_unsorted;
-	RBSize() : size(0), nodes(0), reds(0), blacks(0), is_unsorted(false) {}
+	
+	RBSize()
+	:
+		size(0),
+		nodes(0),
+		reds(0),
+		blacks(0),
+		is_unsorted(false)
+	{}
+	
 	~RBSize() {}
+	
 }; /* struct Size end */
 
 template<typename T>
@@ -43,22 +54,28 @@ std::ostream& operator<<(std::ostream& o, ft::RBSize<T>& size) {
 	return o;
 }
 
-template< typename T >
-struct RBNode {
+template< typename Key, typename T >
+struct RBNode : public ft::pair<Key,T> {
+	
 	/* Member types */
-	typedef T				value_type;
+	
+	typedef Key				key_type;
+	typedef T				mapped_type;
+	typedef RBNode*			node_pointer;
+
 	/* Member objects */
-	value_type				value;
+	
+	key_type				first;
+	mapped_type				second;
 	bool					color;
-	RBNode*					parent;
-	RBNode*					left;
-	RBNode*					right;
+	node_pointer			parent;
+	node_pointer			left;
+	node_pointer			right;
 
 	/* Member functions */
 
 	RBNode()
 	:
-		value(),
 		color(RED),
 		parent(NULL),
 		left(NULL),
@@ -67,10 +84,17 @@ struct RBNode {
 
 	~RBNode() {};
 
-	RBNode(const value_type& value, bool color = RED,
-		   RBNode* parent = NULL, RBNode* left = NULL, RBNode* right = NULL)
+	RBNode(
+		key_type		key,
+		mapped_type		t,
+		bool			color = RED,
+		RBNode*			parent = NULL,
+		RBNode*			left = NULL,
+		RBNode*			right = NULL
+		)
 	:
-		value(value),
+		first(key),
+		second(t),
 		color(color),
 		parent(parent),
 		left(left),
@@ -79,7 +103,8 @@ struct RBNode {
 
 	RBNode (const RBNode& node)
 	:
-		value(node.value),
+		first(node.first),
+		second(node.second),
 		color(node.color),
 		parent(node.parent),
 		left(node.left),
@@ -89,6 +114,8 @@ struct RBNode {
 	RBNode& operator=(const RBNode& other)
 	{
 		if (other != *this) {
+			this->first = other.first;
+			this->second = other.second;
 			this->value = other.value;
 			this->color = other.color;
 			this->parent = other.parent;
@@ -101,11 +128,12 @@ struct RBNode {
 	bool operator==(const RBNode& other)
 	{
 		if (
-			value == other.value &&
-			color == other.color &&
-			parent == other.parent &&
-			left == other.left &&
-			right == other.right
+			this->first == other.first &&
+			this->second == other.secont &&
+			this->color == other.color &&
+			this->parent == other.parent &&
+			this->left == other.left &&
+			this->right == other.right
 			)
 			return (true);
 		return (false);
@@ -117,22 +145,27 @@ struct RBNode {
 
 }; /* struct RBNode end */
 
-template<typename T>
-std::ostream& operator<<(std::ostream& o, ft::RBNode<T>& node) {
-	o << node.value << (node.color == RED ? "r" : "B");
+template< typename Key, typename T >
+std::ostream& operator<<(std::ostream& o, ft::RBNode<Key,T>& node) {
+	o << node.first << "-";
+	o << node.second << (node.color == RED ? "r" : "B");
 	return o;
 }
 
 template<
-	typename T,
-	typename Compare = std::less<T>,
-	typename Allocator = std::allocator<RBNode<T> >
+	class Key,
+	class T,
+	class Compare = std::less<Key>,
+	typename Allocator = std::allocator<RBNode<const Key,T> >
 > class RBTree {
 public:
+	
 	/* Member types */
-	typedef T									value_type;
+	
+	typedef Key									key_type;
+	typedef T									mapped_type;
 	typedef Compare								compare_type;
-	typedef RBNode< value_type >				node_type;
+	typedef RBNode<const Key, T>				node_type;
 	typedef node_type*							node_pointer;
 	typedef node_type&							node_reference;
 	typedef Allocator							allocator_type;
@@ -140,14 +173,18 @@ public:
 	typedef RBSize< size_type >					Size_type;
 	typedef ft::iterator<
 			ft::bidirectional_iterator_tag,
-			value_type >						iterator_type;
+			node_type >							iterator_type;
+	
 private:
+	
 	/* Member objects */
+	
 	node_pointer								root;
 	compare_type								compare;
 	Size_type									size;
-public:
 	allocator_type								allocator;
+	
+public:
 
 	/* Constructor & destructor */
 	
@@ -155,84 +192,68 @@ public:
 	
 	~RBTree() {
 		while (size.size)
-			deleteNode(findMinNode(root)->value);
+			deleteNode(findMinNode(root)->first);
 	}
 	
 	class iterator : public iterator_type {
 	private:
-		iterator_type							value;
-		node_pointer							node;
-
+		node_pointer		ptr;
 	public:
 
-		iterator() : value(NULL), node(NULL) {}
+		iterator(node_pointer node) : ptr(node) {}
 		
-		iterator( const value_type& value, const node_pointer& node )
-		:
-			value(value),
-			node(node)
-		{}
+		iterator() : ptr(NULL) {}
 
-		iterator(const iterator_type& other)
-		:
-			value(other.value),
-			node(other.node)
-		{}
+		iterator(const iterator_type& other) {
+			if (*this != other)
+				this->ptr = other.ptr;
+			return ( *this );
+		}
 		
 		iterator_type& operator=( const iterator_type& other ) {
-			if (*this != other) {
-				value = other.value;
-				node = findNode(value);
-			}
+			if (*this != other)
+				ptr = other.ptr;
 			return ( *this );
 		}
 				
 		~iterator() {}
 
-		iterator_type& operator*() const { return *value; }
+		node_reference operator*() const { return *ptr; }
 		
-		iterator_type& operator->() const { return value; }
+		node_pointer operator->() const { return ptr; }
 
-		iterator_type& operator++(void) const {
-			node = findNextNode(node);
-			value = node->value;
+		node_pointer operator++(void) const {
+			ptr = ft::RBTree< key_type, mapped_type >::findNextNode(*ptr);
 			return ( *this );
 		}
 		
-		iterator_type& operator++(int) const {
-			iterator_type tmp = value;
+		node_pointer operator++(int) const {
+			iterator_type tmp = ptr;
 			++(*this);
 			return ( tmp );
 		}
 		
-		iterator_type& operator--(void) const {
-			node = findPreviousNode(node);
-			value = node->value;
+		node_pointer operator--(void) const {
+			ptr = findPreviousNode(ptr);
 			return ( *this );
 		}
 		
-		iterator_type& operator--(int) const {
-			iterator_type tmp = value;
+		node_pointer operator--(int) const {
+			iterator_type tmp = ptr;
 			--(*this);
 			return ( tmp );
 		}
 		
-		
 	}; /* class iterator_node end */
 
-	iterator_type& begin() {
-		node_pointer node = findMinNode(root);
-		value_type value = node->value;
-		return iterator(value, node);
+	
+	node_pointer begin() {
+//		iterator it(findMin());
+		return findMin();
 	}
 
-
-	
-	
 	/* Other member functions */
-	
 
-	
 	size_type		get_size() {
 		return ( size.size );
 	}
@@ -263,52 +284,51 @@ public:
 		}
 	}
 		
-	void			insertNode(const value_type& value) {
+	void			insertNode(const key_type& key, const mapped_type& t) {
 		if (root != NULL) {
 			bool child = RIGHT;
 			node_pointer node = root, parent = NULL;
 			while (node != NULL) {
-				if ( !compare(value, node->value) && !compare(node->value, value) )
+				if ( !compare(key, node->first) && !compare(node->first, key) )
 					return ;
 				parent = node;
-				child = (compare(value, node->value) ? LEFT : RIGHT);
+				child = (compare(key, node->first) ? LEFT : RIGHT);
 				node = (child == LEFT ? node->left : node->right);
 			}
 			node = allocator.allocate(1);
-			allocator.construct(node, node_type(value, RED, parent));
+			allocator.construct(node, node_type(key, t, RED, parent));
 			child == LEFT ? parent->left = node : parent->right = node;
 			size.size++;
 			insertCase1(node);
 		} else {
 			root = allocator.allocate(1);
-			allocator.construct(root, node_type(value, BLACK));
+			allocator.construct(root, node_type(key, t, BLACK));
 			size.size++;
 		}
 	}
 		
-	void			deleteNode(const value_type& value) {
-		node_pointer node;
-		node_pointer rm_node;
-		if ( (node = findNode(value) ) != NULL) {
+	void			deleteNode(const key_type& key) {
+		node_pointer node = findNode(key), tmp = NULL;
+		if (node != NULL) {
 			if (node->left != NULL) {
-				rm_node = findMaxNode(node->left);
-				node->value = rm_node->value;
-				deleteOneChild(rm_node);
+				tmp = findMaxNode(node->left);
+				swapNodes(node, tmp);
+				deleteOneChild(node);
 			} else if (node->right != NULL) {
-				rm_node = findMinNode(node->right);
-				node->value = rm_node->value;
-				deleteOneChild(rm_node);
+				tmp = findMinNode(node->right);
+				swapNodes(node, tmp);
+				deleteOneChild(node);
 			} else
 				deleteOneChild(node);
 		}
 	}
 	
-	node_pointer	findNode(const value_type value) {
+	node_pointer	findNode(const key_type& key) {
 		node_pointer node = root;
 		while (node != NULL) {
-			if ( !compare(value, node->value) && !compare(node->value, value) )
+			if ( !compare(key, node->first) && !compare(node->first, key) )
 				break ;
-			else if ( compare(value, node->value) )
+			else if ( compare(key, node->first) )
 				node = node->left;
 			else
 				node = node->right;
@@ -345,10 +365,21 @@ public:
 		}
 		return (NULL);
 	}
-	
-	
 
 private:
+	
+	void			swapNodes(node_pointer n1, node_pointer n2) {
+		node_pointer p1 = n1->parent;
+		bool bp1 = (n1 == n1->parent->left ? LEFT : RIGHT);
+		node_pointer p2 = n2->parent;
+		bool bp2 = (n2 == n2->parent->left ? LEFT : RIGHT);
+		if (bp1 == LEFT) p1->left = n2; else p1->right = n2;
+		if (bp2 == LEFT) p2->left = n1; else p2->right = n1;
+		n1->parent = p2; n2->parent = p1;
+		p1 = n1->left; p2 = n1->right;
+		n1->left = n2->left; n1->right = n2->right;
+		n2->left = p1; n2->right = p2;
+	}
 	
 	void			deleteOneChild(node_pointer node) {
 		/* Condition: node has at most one non-zero child. */

@@ -31,9 +31,11 @@ int main(int, const char**)
 	fill_map(my_map);
 	map[1] = 77;
 	ft::map<int, int>::iterator it = my_map.begin();
-	std::map<int, int>::iterator it1 = map.begin();
-//	std::cout << (*it)->second << std::endl;
-	std::cout << it1->second << std::endl;
+	(void)it;
+//	std::map<int, int>::iterator it1 = map.begin();
+//	std::cout << *(++it) << std::endl;
+//	std::cout << it->first << std::endl;
+//	std::cout << it1 << std::endl;
 //	it++;
 //	std::cout << *it << std::endl;
 
