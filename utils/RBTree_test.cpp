@@ -17,7 +17,7 @@
 #include "pair.hpp"
 
 # define START			1			/* Start key to be stored */
-# define END			2500			/* End key to be stored */
+# define END			25			/* End key to be stored */
 
 template< typename T >
 void fill_tree(ft::RBTree<T>& tree) {
@@ -71,8 +71,8 @@ void	delete_tree_pair_rand(ft::RBTree<ft::pair<T1,T2> >& tree) {
 
 int main(int, const char**)
 {
-	ft::RBTree<int> tree;
-//	ft::RBTree<ft::pair<int, char> > tree;
+//	ft::RBTree<int> tree;
+	ft::RBTree<ft::pair<int, char> > tree;
 
 	
 //	ft::pair<int, char> p = ft::make_pair(1, '*');
@@ -84,7 +84,7 @@ int main(int, const char**)
 
 //	fill_tree(tree);
 //	fill_tree_rand(tree);
-//	fill_tree_pair_rand(tree);
+	fill_tree_pair_rand(tree);
 //	delete_tree_rand(tree);
 //	delete_tree_pair_rand(tree);
 

@@ -23,23 +23,23 @@ void fill_map(ft::map<T1,T2>& map) {
 		map.insert(i, 99);
 }
 
-
-
-
-
 int main(int, const char**)
 {
-	ft::map<int, int> map;
+	ft::map<int, int>	my_map;
+	std::map<int, int>	map;
 	
-	fill_map(map);
-	ft::map<int, int>::iterator it = map.begin();
-	std::cout << *it << std::endl;
-	it++;
-	std::cout << *it << std::endl;
+	fill_map(my_map);
+	map[1] = 77;
+	ft::map<int, int>::iterator it = my_map.begin();
+	std::map<int, int>::iterator it1 = map.begin();
+//	std::cout << (*it)->second << std::endl;
+	std::cout << it1->second << std::endl;
+//	it++;
+//	std::cout << *it << std::endl;
 
 	
 	
-	std::cout << map.size() << std::endl;
+	std::cout << my_map.size() << std::endl;
 	std::cout << "Hello, World!\n";
 	return 0;
 }

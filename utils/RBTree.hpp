@@ -20,6 +20,7 @@
 # define INDENT	":   "
 
 # include <iostream>
+# include "iterator.hpp"
 
 namespace ft {
 
@@ -29,7 +30,7 @@ struct RBSize {
 	size_type		size, nodes, reds, blacks;
 	bool			is_unsorted;
 	RBSize() : size(0), nodes(0), reds(0), blacks(0), is_unsorted(false) {}
-	~RBSize() {} /* struct rb_node end */
+	~RBSize() {}
 }; /* struct Size end */
 
 template<typename T>
@@ -99,11 +100,13 @@ struct RBNode {
 
 	bool operator==(const RBNode& other)
 	{
-		if (value == other.value &&
+		if (
+			value == other.value &&
 			color == other.color &&
 			parent == other.parent &&
 			left == other.left &&
-			right == other.right)
+			right == other.right
+			)
 			return (true);
 		return (false);
 	}
@@ -114,12 +117,12 @@ struct RBNode {
 
 }; /* struct RBNode end */
 
-//template<typename T>
-//std::ostream& operator<<(std::ostream& o, ft::RBNode<T>& node) {
-//	o << node.value << (node.color == RED ? "r" : "B");
-//	return o;
-//}
-//
+template<typename T>
+std::ostream& operator<<(std::ostream& o, ft::RBNode<T>& node) {
+	o << node.value << (node.color == RED ? "r" : "B");
+	return o;
+}
+
 template<
 	typename T,
 	typename Compare = std::less<T>,
@@ -135,14 +138,16 @@ public:
 	typedef Allocator							allocator_type;
 	typedef typename Allocator::size_type		size_type;
 	typedef RBSize< size_type >					Size_type;
+	typedef ft::iterator<
+			ft::bidirectional_iterator_tag,
+			value_type >						iterator_type;
 private:
 	/* Member objects */
 	node_pointer								root;
 	compare_type								compare;
-	allocator_type								allocator;
 	Size_type									size;
-	
 public:
+	allocator_type								allocator;
 
 	/* Constructor & destructor */
 	
@@ -152,13 +157,112 @@ public:
 		while (size.size)
 			deleteNode(findMinNode(root)->value);
 	}
+	
+	class iterator : public iterator_type {
+	private:
+		iterator_type							value;
+		node_pointer							node;
 
+	public:
+
+		iterator() : value(NULL), node(NULL) {}
+		
+		iterator( const value_type& value, const node_pointer& node )
+		:
+			value(value),
+			node(node)
+		{}
+
+		iterator(const iterator_type& other)
+		:
+			value(other.value),
+			node(other.node)
+		{}
+		
+		iterator_type& operator=( const iterator_type& other ) {
+			if (*this != other) {
+				value = other.value;
+				node = findNode(value);
+			}
+			return ( *this );
+		}
+				
+		~iterator() {}
+
+		iterator_type& operator*() const { return *value; }
+		
+		iterator_type& operator->() const { return value; }
+
+		iterator_type& operator++(void) const {
+			node = findNextNode(node);
+			value = node->value;
+			return ( *this );
+		}
+		
+		iterator_type& operator++(int) const {
+			iterator_type tmp = value;
+			++(*this);
+			return ( tmp );
+		}
+		
+		iterator_type& operator--(void) const {
+			node = findPreviousNode(node);
+			value = node->value;
+			return ( *this );
+		}
+		
+		iterator_type& operator--(int) const {
+			iterator_type tmp = value;
+			--(*this);
+			return ( tmp );
+		}
+		
+		
+	}; /* class iterator_node end */
+
+	iterator_type& begin() {
+		node_pointer node = findMinNode(root);
+		value_type value = node->value;
+		return iterator(value, node);
+	}
+
+
+	
+	
 	/* Other member functions */
+	
+
 	
 	size_type		get_size() {
 		return ( size.size );
 	}
 	
+	void			insertNode(node_pointer nodeToInsert) {
+		if (root != NULL) {
+			bool child = RIGHT;
+			node_pointer node = root, parent = NULL;
+			while (node != NULL) {
+				if (!compare(nodeToInsert->value, node->value) &&
+					!compare(node->value, nodeToInsert->value)) {
+					allocator.destroy(nodeToInsert);
+					allocator.deallocate(nodeToInsert, 1);
+					return ;
+				}
+				parent = node;
+				child = (compare(nodeToInsert->value, node->value) ? LEFT : RIGHT);
+				node = (child == LEFT ? node->left : node->right);
+			}
+			child == LEFT ? parent->left = nodeToInsert : parent->right = nodeToInsert;
+			nodeToInsert->parent = parent;
+			size.size++;
+			insertCase1(nodeToInsert);
+		} else {
+			root = nodeToInsert;
+			nodeToInsert->color = BLACK;
+			size.size++;
+		}
+	}
+		
 	void			insertNode(const value_type& value) {
 		if (root != NULL) {
 			bool child = RIGHT;
@@ -212,9 +316,9 @@ public:
 		return (node);
 	}
 	
-	node_pointer	findMin(void) { return ( findMinNode(root) ); }
+	node_pointer	findMin() { return findMinNode(root); }
 	
-	node_pointer	findMax(void) { return ( findMaxNode(root) ); }
+	node_pointer	findMax() { return findMaxNode(root); }
 	
 	node_pointer	findNextNode(node_pointer node) {
 		if (node != NULL) {
