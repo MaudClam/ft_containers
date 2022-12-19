@@ -16,7 +16,7 @@
 # include <iostream>
 # include "RBTree.hpp"
 # include "iterator.hpp"
-# include "utils.hpp"
+# include "utils.hpp"//ghj
 # include "pair.hpp"
 
 namespace ft {
@@ -28,7 +28,9 @@ template<
 	class Allocator = std::allocator<ft::pair<const Key, T> >
 > class map {
 public:
+	
 	/* Member types */
+	
 	typedef Key										key_type;
 	typedef T										mapped_type;
 	typedef ft::pair<const Key, T>					value_type;
@@ -38,11 +40,16 @@ public:
 	typedef const value_type&						const_reference;
 	typedef Allocator								allocator_type;
 	typedef std::size_t								size_type;
+	typedef ft::RBTree< key_type, mapped_type >		tree_type;
+	typedef typename tree_type::node_type			node_type;
+	typedef node_type*								node_pointer;
+	typedef node_type&								node_reference;
+	typedef ft::iterator<
+			ft::bidirectional_iterator_tag,
+			node_type >								iterator_type;
 
 private:
 	/* Member objects */
-	
-	typedef ft::RBTree< key_type, mapped_type >		tree_type;
 	tree_type										tree;
 	
 public:
@@ -54,10 +61,83 @@ public:
 	~map() {}
 
 	/* Iterators */
-	typedef typename tree_type::iterator			iterator;
+		
+	class iterator : public iterator_type {
+	private:
+		node_pointer		ptr;
+	public:
+
+		iterator(node_pointer node) : ptr(node) {}
+		
+		iterator() : ptr(NULL) {}
+
+		iterator(const iterator& other) {
+			if (ptr != other.ptr)
+				this->ptr = other.ptr;
+		}
+		
+		iterator& operator=( const iterator& other ) {
+			if (ptr != other.ptr)
+				this->ptr = other.ptr;
+			return ( *this );
+		}
+				
+		~iterator() {}
+
+		node_reference operator*() const { return *ptr; }
+		
+		node_pointer operator->() const { return ptr; }
+
+		node_pointer operator++(void) {
+			if (ptr != NULL) {
+				if (ptr->right != NULL) {
+					ptr = ptr->right;
+					while (ptr->left != NULL)
+						ptr = ptr->left;
+					return (ptr);
+				}
+				while (ptr->parent != NULL) {
+					if (ptr == ptr->parent->left)
+						return (ptr = ptr->parent);
+					ptr = ptr->parent;
+				}
+			}
+			return (NULL);
+		}
+
+		node_pointer operator++(int) {
+			node_pointer tmp = ptr;
+			++(*this);
+			return ( tmp );
+		}
+		
+		node_pointer operator--(void) {
+			if (ptr != NULL) {
+				if (ptr->left != NULL) {
+					ptr = ptr->left;
+					while (ptr->right != NULL)
+						ptr = ptr->right;
+					return (ptr);
+				}
+				while (ptr->parent != NULL) {
+					if (ptr == ptr->parent->right)
+						return (ptr->parent);
+					ptr = ptr->parent;
+				}
+			}
+			return (NULL);
+		}
+
+		node_pointer operator--(int) {
+			node_pointer tmp = ptr;
+			--(*this);
+			return ( tmp );
+		}
+		
+	}; /* class iterator_node end */
 
 	iterator begin() {
-		return iterator(tree.begin());
+		return tree.findMin();
 	}
 
 //	iterator_type begin() {

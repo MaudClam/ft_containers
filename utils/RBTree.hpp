@@ -156,7 +156,7 @@ template<
 	class Key,
 	class T,
 	class Compare = std::less<Key>,
-	typename Allocator = std::allocator<RBNode<const Key,T> >
+	typename Allocator = std::allocator<RBNode< Key,T> >
 > class RBTree {
 public:
 	
@@ -165,15 +165,12 @@ public:
 	typedef Key									key_type;
 	typedef T									mapped_type;
 	typedef Compare								compare_type;
-	typedef RBNode<const Key, T>				node_type;
+	typedef RBNode< Key, T>					node_type;
 	typedef node_type*							node_pointer;
 	typedef node_type&							node_reference;
 	typedef Allocator							allocator_type;
 	typedef typename Allocator::size_type		size_type;
 	typedef RBSize< size_type >					Size_type;
-	typedef ft::iterator<
-			ft::bidirectional_iterator_tag,
-			node_type >							iterator_type;
 	
 private:
 	
@@ -194,59 +191,7 @@ public:
 		while (size.size)
 			deleteNode(findMinNode(root)->first);
 	}
-	
-	class iterator : public iterator_type {
-	private:
-		node_pointer		ptr;
-	public:
-
-		iterator(node_pointer node) : ptr(node) {}
 		
-		iterator() : ptr(NULL) {}
-
-		iterator(const iterator_type& other) {
-			if (*this != other)
-				this->ptr = other.ptr;
-			return ( *this );
-		}
-		
-		iterator_type& operator=( const iterator_type& other ) {
-			if (*this != other)
-				ptr = other.ptr;
-			return ( *this );
-		}
-				
-		~iterator() {}
-
-		node_reference operator*() const { return *ptr; }
-		
-		node_pointer operator->() const { return ptr; }
-
-		node_pointer operator++(void) const {
-			ptr = ft::RBTree< key_type, mapped_type >::findNextNode(*ptr);
-			return ( *this );
-		}
-		
-		node_pointer operator++(int) const {
-			iterator_type tmp = ptr;
-			++(*this);
-			return ( tmp );
-		}
-		
-		node_pointer operator--(void) const {
-			ptr = findPreviousNode(ptr);
-			return ( *this );
-		}
-		
-		node_pointer operator--(int) const {
-			iterator_type tmp = ptr;
-			--(*this);
-			return ( tmp );
-		}
-		
-	}; /* class iterator_node end */
-
-	
 	node_pointer begin() {
 //		iterator it(findMin());
 		return findMin();
@@ -258,31 +203,31 @@ public:
 		return ( size.size );
 	}
 	
-	void			insertNode(node_pointer nodeToInsert) {
-		if (root != NULL) {
-			bool child = RIGHT;
-			node_pointer node = root, parent = NULL;
-			while (node != NULL) {
-				if (!compare(nodeToInsert->value, node->value) &&
-					!compare(node->value, nodeToInsert->value)) {
-					allocator.destroy(nodeToInsert);
-					allocator.deallocate(nodeToInsert, 1);
-					return ;
-				}
-				parent = node;
-				child = (compare(nodeToInsert->value, node->value) ? LEFT : RIGHT);
-				node = (child == LEFT ? node->left : node->right);
-			}
-			child == LEFT ? parent->left = nodeToInsert : parent->right = nodeToInsert;
-			nodeToInsert->parent = parent;
-			size.size++;
-			insertCase1(nodeToInsert);
-		} else {
-			root = nodeToInsert;
-			nodeToInsert->color = BLACK;
-			size.size++;
-		}
-	}
+//	void			insertNode(node_pointer nodeToInsert) {
+//		if (root != NULL) {
+//			bool child = RIGHT;
+//			node_pointer node = root, parent = NULL;
+//			while (node != NULL) {
+//				if (!compare(nodeToInsert->value, node->value) &&
+//					!compare(node->value, nodeToInsert->value)) {
+//					allocator.destroy(nodeToInsert);
+//					allocator.deallocate(nodeToInsert, 1);
+//					return ;
+//				}
+//				parent = node;
+//				child = (compare(nodeToInsert->value, node->value) ? LEFT : RIGHT);
+//				node = (child == LEFT ? node->left : node->right);
+//			}
+//			child == LEFT ? parent->left = nodeToInsert : parent->right = nodeToInsert;
+//			nodeToInsert->parent = parent;
+//			size.size++;
+//			insertCase1(nodeToInsert);
+//		} else {
+//			root = nodeToInsert;
+//			nodeToInsert->color = BLACK;
+//			size.size++;
+//		}
+//	}
 		
 	void			insertNode(const key_type& key, const mapped_type& t) {
 		if (root != NULL) {
@@ -312,10 +257,14 @@ public:
 		if (node != NULL) {
 			if (node->left != NULL) {
 				tmp = findMaxNode(node->left);
+				
+//				node->first = tmp->first;
 				swapNodes(node, tmp);
 				deleteOneChild(node);
 			} else if (node->right != NULL) {
 				tmp = findMinNode(node->right);
+				
+//				node->first = tmp->first;
 				swapNodes(node, tmp);
 				deleteOneChild(node);
 			} else
@@ -369,16 +318,43 @@ public:
 private:
 	
 	void			swapNodes(node_pointer n1, node_pointer n2) {
-		node_pointer p1 = n1->parent;
-		bool bp1 = (n1 == n1->parent->left ? LEFT : RIGHT);
-		node_pointer p2 = n2->parent;
-		bool bp2 = (n2 == n2->parent->left ? LEFT : RIGHT);
-		if (bp1 == LEFT) p1->left = n2; else p1->right = n2;
-		if (bp2 == LEFT) p2->left = n1; else p2->right = n1;
-		n1->parent = p2; n2->parent = p1;
-		p1 = n1->left; p2 = n1->right;
-		n1->left = n2->left; n1->right = n2->right;
-		n2->left = p1; n2->right = p2;
+		node_pointer	p1 = NULL, p2 = NULL;
+		bool			tmp_color;
+		
+		if (n1 != NULL && n2 != NULL) {
+			tmp_color = n1->color; n1->color = n2->color; n2->color = tmp_color;
+			if (n1->left != NULL) n1->left->parent = n2;
+			if (n1->right != NULL) n1->right->parent = n2;
+			
+			if (n2->left != NULL) n2->left->parent = n1;
+			if (n2->right != NULL) n2->right->parent = n1;
+			
+			p1 = n1->left; p2 = n1->right;
+			n1->left = n2->left; n1->right = n2->right;
+			n2->left = p1; n2->right = p2;
+			
+			if (n1->parent != NULL && n2->parent != NULL) {
+				p1 = n1->parent;
+				p2 = n2->parent;
+				bool bp1 = (n1 == p1->left ? LEFT : RIGHT);
+				bool bp2 = (n2 == p2->left ? LEFT : RIGHT);
+				if (bp1 == LEFT) p1->left = n2; else p1->right = n2;
+				if (bp2 == LEFT) p2->left = n1; else p2->right = n1;
+				n1->parent = p2; n2->parent = p1;
+			} else {
+				if (n1->parent == NULL) {
+					p2 = n2->parent;
+					bool bp2 = (n2 == p2->left ? LEFT : RIGHT);
+					if (bp2 == LEFT) p2->left = n1; else p2->right = n1;
+					n1->parent = p2; n2->parent = NULL;
+				} else {
+					p1 = n1->parent;
+					bool bp1 = (n1 == p1->left ? LEFT : RIGHT);
+					if (bp1 == LEFT) p1->left = n2; else p1->right = n2;
+					n2->parent = p1; n1->parent = NULL;
+				}
+			}
+		}
 	}
 	
 	void			deleteOneChild(node_pointer node) {
@@ -648,9 +624,9 @@ private:
 	
 	void			treeBalanceCounter(node_pointer node) {
 		if (node != NULL) {
-			if (node->left != NULL && compare(node->value, node->left->value))
+			if (node->left != NULL && compare(node->first, node->left->first))
 				size.is_unsorted = true;
-			if (node->right != NULL && compare(node->right->value, node->value))
+			if (node->right != NULL && compare(node->right->first, node->first))
 				size.is_unsorted = true;
 			size.nodes++;
 			if (node->color == RED)

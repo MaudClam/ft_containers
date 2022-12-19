@@ -15,7 +15,7 @@
 #include "map.hpp"
 
 # define START			1			/* Start key to be stored */
-# define END			9			/* End key to be stored */
+# define END			999			/* End key to be stored */
 
 template< typename T1, typename T2 >
 void fill_map(ft::map<T1,T2>& map) {
@@ -26,15 +26,23 @@ void fill_map(ft::map<T1,T2>& map) {
 int main(int, const char**)
 {
 	ft::map<int, int>	my_map;
-	std::map<int, int>	map;
+//	std::map<int, int>	map;
 	
 	fill_map(my_map);
-	map[1] = 77;
+//	map[1] = 77;
 	ft::map<int, int>::iterator it = my_map.begin();
-	(void)it;
+//	(void)it;
 //	std::map<int, int>::iterator it1 = map.begin();
-//	std::cout << *(++it) << std::endl;
-//	std::cout << it->first << std::endl;
+//	++it;
+//	++it;
+//	++it;
+//	++it;
+//	++it;
+//	++it;
+//	++it;
+//	++it;
+//	++it;
+	std::cout << it->first << std::endl;
 //	std::cout << it1 << std::endl;
 //	it++;
 //	std::cout << *it << std::endl;
