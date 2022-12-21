@@ -58,6 +58,22 @@ struct remove_const <const T> {
 template< typename T >
 using remove_const_t = typename remove_const<T>::type;
 
+static class nullptr_t {
+public:
+	template<class T>
+	operator T*() const { return (0); }
+	
+	template<class C, class T>
+	operator T C::*() const { return (0); }
+
+	template<class T>
+	T operator->() const { return (0); }
+
+private:
+		void operator&() const;
+	
+} u_nullptr = {};
+
 /* Implementation std::is_same  end */
 
 } /* namespace ft end */
