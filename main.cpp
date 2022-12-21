@@ -29,7 +29,7 @@ void fill_map(ft::map<const T1,T2>& map) {
 		map[i] = 99 * i + i;
 }
 
-typedef int		Key;
+typedef const int		Key;
 typedef int		T;
 
 int main(int, const char**)
@@ -37,13 +37,23 @@ int main(int, const char**)
 	ft::map<Key,T>	map, mapp;
 
 	fill_map(map);
+	
+	ft::pair<ft::map<Key,T>::iterator, bool> p;
+	p = map.insert( ft::make_pair<Key,T>(5,1) );
+	
+	ft::map<Key,T>::iterator pos = map.begin();
+	++pos; ++pos; ++pos; ++pos; ++pos; ++pos;
+	ft::map<Key,T>::iterator it = map.insert( pos, ft::make_pair<Key,T>(5,1) );
+	
+	std::cout << *p.first << " " << p.second << std::endl;
+	std::cout << *it << " " << std::endl;
+
 
 	mapp[1] = 2;
 	mapp[3] = 4;
 
 	std::cout << map.size() << std::endl;
 	std::cout << mapp.size() << std::endl;
-
 
 	try {
 		mapp = map;

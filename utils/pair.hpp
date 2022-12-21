@@ -22,7 +22,6 @@ template<
 class T1,
 class T2
 > struct pair {
-public:
 	
 	/* Member types */
 	typedef T1	first_type;
@@ -45,20 +44,12 @@ public:
 	
 	/* ft::pair<T1,T2>::operator= */
 	
-	pair& operator=( const pair& other ) {
+	template< class U1, class U2 >
+	pair& operator=( const pair<U1, U2>& other )  {
 		if (*this != other) {
 			this->first = other.first;
 			this->second = other.second;
 		}
-		return(*this);
-	}
-
-	template< class U1, class U2 >
-	pair& operator=( const pair<U1, U2>& other )  {
-//		if (*this != other) {
-			this->first = other.first;
-			this->second = other.second;
-//		}
 		return (*this);
 	}
 	

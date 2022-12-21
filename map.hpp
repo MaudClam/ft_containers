@@ -55,6 +55,8 @@ public:
 		~value_compare() {}
 		bool operator()(pointer x, pointer y)  {
 			return ( k_compare(x->first, y->first) ); }
+		bool operator()(value_type x, value_type y)  {
+			return ( k_compare(x.first, y.first) ); }
 	};
 		
 	/* Member types */
@@ -72,6 +74,7 @@ private:
 	
 	tree_type										tree;
 	tree_type										clone_tree;
+	value_compare									compare;
 	allocator_type									allocator;
 	
 public:
@@ -142,20 +145,24 @@ public:
 		node_pointer		max_keeper;
 	public:
 
+		iterator()
+		:
+			ptr(NULL),
+			max_keeper(NULL)
+		{}
+
 		iterator(node_pointer node, node_pointer max_keeper = NULL)
 		:
 			ptr(node),
 			max_keeper(max_keeper)
 		{}
 		
-		iterator() : ptr(NULL), max_keeper(NULL) {}
-
 		iterator(const iterator& other) {
 			if (ptr != other.ptr)
 				this->ptr = other.ptr;
 		}
 		
-		iterator& operator=( const iterator& other ) {
+		iterator&	operator=( const iterator& other ) {
 			if (ptr != other.ptr)
 				this->ptr = other.ptr;
 			return ( *this );
@@ -163,11 +170,11 @@ public:
 				
 		~iterator() {}
 
-		reference operator*() const { return *ptr->value; }
+		reference	operator*() const { return *ptr->value; }
 		
-		pointer operator->() const { return ptr->value; }
+		pointer		operator->() const { return ptr->value; }
 
-		iterator operator++(void) {
+		iterator	operator++(void) {
 			if (ptr != NULL) {
 				if (ptr->right != NULL) {
 					ptr = ptr->right;
@@ -189,13 +196,13 @@ public:
 			return (*this);
 		}
 
-		iterator operator++(int) {
+		iterator	operator++(int) {
 			iterator tmp = *this;
 			++(*this);
 			return ( tmp );
 		}
 		
-		iterator operator--(void) {
+		iterator	operator--(void) {
 			if (ptr == u_nullptr) {
 				ptr = max_keeper;
 				max_keeper = NULL;
@@ -221,7 +228,7 @@ public:
 			return (*this);
 		}
 
-		iterator operator--(int) {
+		iterator	operator--(int) {
 			iterator tmp = *this;
 			--(*this);
 			return ( tmp );
@@ -263,7 +270,27 @@ public:
 		}
 	}
 	
-	ft::pair<iterator, bool>insert( const value_type& value );//FIXME
+	ft::pair<iterator, bool>
+					insert( const value_type& value ) {
+		node_pointer	node = findKey(value.first);
+		bool			is_inserted = (node == NULL ? true : false);
+		if ( is_inserted )
+			try {
+				node = insertPairAndNode(value.first, value.second);
+			} catch (std::exception &e) {
+				node = tree.findMax();
+			}
+		return (ft::make_pair(iterator(node), is_inserted));
+	}
+	
+	iterator 		insert( iterator pos, const value_type& value ) {
+		node_pointer node = findKey(value.first);
+		if (node != NULL)
+			return (iterator(node));
+		if ( !compare(value, *pos) && !compare(*pos, value))
+			return (pos);
+		return ( insert(value).first );
+	}
 	
 private:
 	
