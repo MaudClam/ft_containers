@@ -33,9 +33,9 @@ public:
 	/* Member types */
 	
 	typedef ft::map<Key,T,Compare,Allocator>		self;
-	typedef Key										key_type;
+	typedef ft::remove_const_t<Key>					key_type;
 	typedef T										mapped_type;
-	typedef ft::pair<const Key, T>					value_type;
+	typedef ft::pair<const key_type, mapped_type>	value_type;
 	typedef std::ptrdiff_t							difference_type;
 	typedef Compare									key_compare;
 	typedef Allocator								allocator_type;
@@ -73,7 +73,6 @@ private:
 	/* Member objects */
 	
 	tree_type										tree;
-	tree_type										clone_tree;
 	value_compare									compare;
 	allocator_type									allocator;
 	
@@ -88,18 +87,20 @@ public:
 	map& operator=( const map& other ) {
 		if ( other.size() >= max_size() / 2 )
 			throw std::bad_array_new_length();
+		tree_type	clone_tree;
 		try {
 			node_pointer node = other.tree.findMin();
 			while (node != NULL) {
 				clonePairAndNode(*node->value, clone_tree);
 				node = other.tree.findNextNode(node);
 			}
-			clear();
-			this->tree.tree_transplant(this->clone_tree);
+			clear(tree);
+			this->tree.transplant(clone_tree);
 			return (*this);
 		}
 		catch (std::exception& e) {
 			std::cerr << e.what() << std::endl;
+			clear(clone_tree);
 		}
 		return (*this);
 	}
@@ -142,24 +143,26 @@ public:
 	class iterator : public iterator_type {
 	private:
 		node_pointer		ptr;
-		node_pointer		max_keeper;
+		node_pointer		keeper_max;
 	public:
 
 		iterator()
 		:
 			ptr(NULL),
-			max_keeper(NULL)
+			keeper_max(NULL)
 		{}
 
-		iterator(node_pointer node, node_pointer max_keeper = NULL)
+		iterator(node_pointer node, node_pointer keeper_max = NULL)
 		:
 			ptr(node),
-			max_keeper(max_keeper)
+			keeper_max(keeper_max)
 		{}
 		
 		iterator(const iterator& other) {
-			if (ptr != other.ptr)
+			if (ptr != other.ptr) {
 				this->ptr = other.ptr;
+				this->keeper_max = other.keeper_max;
+			}
 		}
 		
 		iterator&	operator=( const iterator& other ) {
@@ -189,7 +192,7 @@ public:
 					}
 					ptr = ptr->parent;
 				}
-				max_keeper = ptr;
+				keeper_max = ptr;
 				ptr = u_nullptr;
 				return (*this);
 			}
@@ -204,8 +207,8 @@ public:
 		
 		iterator	operator--(void) {
 			if (ptr == u_nullptr) {
-				ptr = max_keeper;
-				max_keeper = NULL;
+				ptr = keeper_max;
+				keeper_max = NULL;
 				return (*this);
 			}
 			if (ptr != NULL) {
@@ -238,6 +241,8 @@ public:
 		bool	operator!=(iterator other) const { return (!(ptr == other.ptr)); }
 
 	}; /* class iterator_node end */
+	
+	typedef ft::pair<iterator, bool>	iterator_bool;
 
 	iterator 		begin() const { return iterator(tree.findMin()); }
 
@@ -260,18 +265,9 @@ public:
 
 	/* Modifiers */
 	
-	void 			clear(void) {
-		while (tree.size.size) {
-			node_pointer	node = tree.findMin();
-			allocator.destroy(node->value);
-			allocator.deallocate(node->value, 1);
-			node->value = NULL;
-			tree.deleteNode(node);
-		}
-	}
+	void 			clear(void) { clear(tree); }
 	
-	ft::pair<iterator, bool>
-					insert( const value_type& value ) {
+	iterator_bool	insert( const value_type& value ) {
 		node_pointer	node = findKey(value.first);
 		bool			is_inserted = (node == NULL ? true : false);
 		if ( is_inserted )
@@ -280,22 +276,73 @@ public:
 			} catch (std::exception &e) {
 				node = tree.findMax();
 			}
-		return (ft::make_pair(iterator(node), is_inserted));
+		return (iterator_bool(iterator(node), is_inserted));
 	}
 	
 	iterator 		insert( iterator pos, const value_type& value ) {
-		node_pointer node = findKey(value.first);
-		if (node != NULL)
-			return (iterator(node));
 		if ( !compare(value, *pos) && !compare(*pos, value))
 			return (pos);
 		return ( insert(value).first );
 	}
 	
-private:
+	iterator 		erase( iterator pos ) {
+		if ( pos != end() ) {
+			node_pointer node = findKey(pos->first);
+			++pos;
+			if (node != NULL) {
+				allocator.destroy(node->value);
+				allocator.deallocate(node->value, 1);
+				node->value = NULL;
+				tree.deleteNode(node);
+			}
+		}
+		return (pos);
+	}
+	
+	iterator 		erase( iterator first, iterator last ) {
+		while ( first != last )
+			erase(first++);
+		return (first);
+	}
+	
+	size_type		erase( const Key& key ) {
+		size_type s = size();
+		tree.deleteNode(findKey(key));
+		return (size() - s);
+	}
+	
+	/* Modifiers */
+
+	size_type count( const Key& key ) const { return (findKey(key) == NULL); }
+	
+	void 			swap( map& other ) {
+		node_pointer	tmp = tree.get_root();
+		tree.set_root(other.tree.get_root());
+		other.tree.set_root(tmp);
+		size_type	s = tree.get_size();
+		tree.set_size(other.tree.get_size());
+		other.tree.set_size(s);
+	}
+	
+	/* Lookup */
+	
+	iterator find( const Key& key ) {
+		node_pointer node = findKey(key);
+		if (node == NULL)
+			return (end());
+		return ( inerator(node) );
+	}
+	
+//	const_iterator find( const Key& key ) const;
 	
 	/* Several internal functions */
+	
+	void			printIteratively(void) { tree.printTreeIteratively(false); }
+	
+	void			printRecursively(void) { tree.printTreeRecursively(); }
 
+private:
+	
 	node_pointer	insertPairAndNode( const key_type& key, const mapped_type& t ) {
 		if ( size() >= max_size() )
 			throw std::bad_array_new_length();
@@ -316,17 +363,21 @@ private:
 	}
 
 	void			clonePairAndNode( const value_type& value, tree_type& clone_tree ) {
-		try {
-			pointer p = allocator.allocate(1);
-			allocator.construct(p, value_type(value));
-			clone_tree.insertNode(p);
-		}
-		catch (std::exception &e) {
-			std::cerr << e.what() << std::endl;
-			clone_tree.clear();
-		}
+		pointer p = allocator.allocate(1);
+		allocator.construct(p, value_type(value));
+		clone_tree.insertNode(p);
 	}
 	
+	void 			clear(tree_type& tree_to_clear) {
+		while (tree_to_clear.size.size) {
+			node_pointer	node = tree_to_clear.findMin();
+			allocator.destroy(node->value);
+			allocator.deallocate(node->value, 1);
+			node->value = NULL;
+			tree_to_clear.deleteNode(node);
+		}
+	}
+		
 }; /* class map end */
 
 } /* namespace ft end */

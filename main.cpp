@@ -19,14 +19,18 @@
 
 template< typename T1, typename T2 >
 void fill_map(ft::map<T1,T2>& map) {
-	for (int i = END; i >= START; --i)
-		map[i] = 99 * i + i;
+	for (int i = END; i >= START; --i) {
+		map[i] = 10 * i + 100 * i + i;
+//		map.insert( map.begin(), ft::pair<T1,T2>(i, 10 * i + 100 * i + i) );
+	}
 }
 
 template< typename T1, typename T2 >
 void fill_map(ft::map<const T1,T2>& map) {
-	for (int i = END; i >= START; --i)
-		map[i] = 99 * i + i;
+	for (int i = END; i >= START; --i) {
+		map[i] = 10 * i + 100 * i + i;
+//		map.insert( map.begin(), ft::pair<T1,T2>(i, 10 * i + 100 * i + i) );
+	}
 }
 
 typedef const int		Key;
@@ -35,35 +39,64 @@ typedef int		T;
 int main(int, const char**)
 {
 	ft::map<Key,T>	map, mapp;
-
 	fill_map(map);
-	
-	ft::pair<ft::map<Key,T>::iterator, bool> p;
-	p = map.insert( ft::make_pair<Key,T>(5,1) );
-	
-	ft::map<Key,T>::iterator pos = map.begin();
-	++pos; ++pos; ++pos; ++pos; ++pos; ++pos;
-	ft::map<Key,T>::iterator it = map.insert( pos, ft::make_pair<Key,T>(5,1) );
-	
-	std::cout << *p.first << " " << p.second << std::endl;
-	std::cout << *it << " " << std::endl;
 
+	ft::pair<ft::map<Key,T>::iterator, bool> it_bool;
+	it_bool = map.insert( ft::make_pair<Key,T>(5,1) );
+	std::cout << "insert(5-1) return " << *it_bool.first << (it_bool.second ? " true\n" : " false\n");
+	it_bool = map.insert( ft::make_pair<Key,T>(10,10) );
+	std::cout << "insert(10-10) return "  << *it_bool.first << (it_bool.second ? " true\n" : " false\n");
+	std::cout << std::endl;
+
+	ft::map<Key,T>::iterator pos = map.begin();
+	++pos; ++pos; ++pos;
+	ft::map<Key,T>::iterator it = map.insert( pos, ft::make_pair<Key,T>(5,1) );
+	std::cout << "insert(5-1) return " << *it << " \n";
+	it = map.insert( pos, ft::make_pair<Key,T>(-1,1) );
+	std::cout << "insert(-1-1) return "   << *it << " \n";
+	std::cout << std::endl;
+
+	map.printIteratively();
+	std::cout << std::endl;
+
+	std::cout << "erase(" << *pos << ") return ";
+	pos = map.erase(pos);
+	std::cout << *pos << "\n";
+	std::cout << std::endl;
+	
+	map.printIteratively();
+	std::cout << std::endl;
+
+	ft::map<Key,T>::iterator first = map.begin();
+	++first; ++first; ++first;
+	ft::map<Key,T>::iterator last = first;
+	++last; ++last; ++last;
+	std::cout << "erase(" << *first << ", ";
+	if ( last == map.end() ) std::cout << "end()"; else std::cout << *last;
+	std::cout << ") return ";
+	pos = map.erase(first, last);
+	if ( pos == map.end() ) std::cout << "end()\n"; else std::cout << *pos << "\n";
+	std::cout << std::endl;
+
+	map.printIteratively();
+	std::cout << std::endl;
 
 	mapp[1] = 2;
 	mapp[3] = 4;
-
-	std::cout << map.size() << std::endl;
-	std::cout << mapp.size() << std::endl;
+	mapp[3] = 7;
+	
+	map.swap(mapp);
+	map.swap(mapp);
 
 	try {
-		mapp = map;
+		map = mapp;
 	}
 	catch (std::exception &e) {
 		std::cerr << e.what() << std::endl;
 	}
-	std::cout << map.size() << std::endl;
-	std::cout << mapp.size() << std::endl;
 
-	std::cout << "Hello, World!\n";
+	map.printIteratively();
+	std::cout << std::endl;
+
 	return 0;
 }

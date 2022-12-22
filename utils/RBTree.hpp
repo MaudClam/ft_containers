@@ -118,7 +118,7 @@ struct RBNode {
 
 template<typename T>
 std::ostream& operator<<(std::ostream& o, ft::RBNode<T>& node) {
-	o << node.value << (node.color == RED ? "r" : "B");
+	o << *node.value;// << (node.color == RED ? ":R" : ":B");
 	return o;
 }
 
@@ -133,14 +133,15 @@ public:
 	/* Member types */
 	
 	typedef ft::RBTree<
-				T,Container,
+				T,
+				Container,
 				Compare,
 				Allocator
 	>											self;
 	typedef self*								self_pointer;
 	typedef T									value_type;
 	typedef value_type*							value_pointer;
-	typedef const value_type&							value_reference;
+	typedef const value_type&					value_reference;
 	typedef Container							container_type;
 	typedef Compare								compare_type;
 	typedef RBNode< value_type >				node_type;
@@ -148,7 +149,7 @@ public:
 	typedef node_type&							node_reference;
 	typedef Allocator							allocator_type;
 	typedef typename Allocator::size_type		size_type;
-	typedef RBSize< size_type >					Size_type;
+	typedef RBSize<size_type>					Size_type;
 	
 private:
 	
@@ -171,7 +172,10 @@ public:
 	
 	RBTree() : root(NULL) {}
 	
-	~RBTree() { clear(); }
+	~RBTree() {
+		while (size.size)
+			deleteNode(findMin());
+ }
 	
 	/* Other member functions */
 	
@@ -303,12 +307,7 @@ public:
 
 private:
 	
-	void			clear(void) {
-		while (size.size)
-			deleteNode(findMinNode(root)->value);
-	}
-
-	void			tree_transplant( self& clone_tree) {
+	void			transplant( self& clone_tree) {
 		root = clone_tree.get_root();
 		clone_tree.set_root(NULL);
 		size.size = clone_tree.get_size();
@@ -582,9 +581,9 @@ private:
 	
 	void			treeBalanceCounter(node_pointer node) {
 		if (node != NULL) {
-			if (node->left != NULL && compare(node->first, node->left->first))
+			if (node->left != NULL && compare(node->value, node->left->value))
 				size.is_unsorted = true;
-			if (node->right != NULL && compare(node->right->first, node->first))
+			if (node->right != NULL && compare(node->right->value, node->value))
 				size.is_unsorted = true;
 			size.nodes++;
 			if (node->color == RED)
@@ -618,35 +617,39 @@ private:
 
 	void			printIteratively(node_pointer node) {
 		if (node != NULL) {
+			node_pointer save_node = node->parent;
 			node->parent = NULL;
 			node_pointer tmp = findMinNode(node);
 			while (tmp != NULL) {
-				//			std::cout << *tmp;
+				std::cout << *tmp;
 				treeBalanceCounter(tmp);
 				tmp = findNextNode(tmp);
-				//			std::cout << (tmp != NULL ? " " : "\n");
+				std::cout << (tmp != NULL ? " " : "\n");
 			}
-			std::cout << size << std::endl;
-			node->parent = root;
+//			std::cout << size << std::endl;
+			node->parent = save_node;
 		}
 	}
 	
 public:
 	
 	void			printTreeRecursively(void) {
+		treeBalanceCounter_reset();
 		printRecursively(root, 0);
 		std::cout << size << std::endl;
 	}
 	
-	void			printTreeIteratively(void) {
-		if (root != NULL) {
+	void			printTreeIteratively(bool branches) {
+		if ( root != NULL && branches ) {
 			treeBalanceCounter_reset();
 			printIteratively(root->left);
 			treeBalanceCounter_reset();
 			printIteratively(root->right);
+		} else if ( root != NULL ) {
+			treeBalanceCounter_reset();
+			printIteratively(root);
 		}
 	}
-
 	
 }; /* class RBTree end */
 
