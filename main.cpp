@@ -33,7 +33,7 @@ void fill_map(ft::map<const T1,T2>& map) {
 	}
 }
 
-typedef const int		Key;
+typedef int		Key;
 typedef int		T;
 
 int main(int, const char**)
@@ -70,7 +70,7 @@ int main(int, const char**)
 	ft::map<Key,T>::iterator first = map.begin();
 	++first; ++first; ++first;
 	ft::map<Key,T>::iterator last = first;
-	++last; ++last; ++last;
+	++last; ++last;
 	std::cout << "erase(" << *first << ", ";
 	if ( last == map.end() ) std::cout << "end()"; else std::cout << *last;
 	std::cout << ") return ";
@@ -86,7 +86,6 @@ int main(int, const char**)
 	mapp[3] = 7;
 	
 	map.swap(mapp);
-	map.swap(mapp);
 
 	try {
 		map = mapp;
@@ -95,8 +94,17 @@ int main(int, const char**)
 		std::cerr << e.what() << std::endl;
 	}
 
-	map.printIteratively();
+	map.printRecursively();
 	std::cout << std::endl;
+	
+	Key x = 2;
+	ft::map<Key,T>::iterator l_bound( map.lower_bound(&x) );
+	std::cout << "map.lower_bound(" << x << ") = ";
+	if ( l_bound == map.end() ) std::cout << "end()\n"; else std::cout << *l_bound << "\n";
+	x = 3;
+	ft::map<Key,T>::const_iterator cl_bound( map.lower_bound(x) );
+	std::cout << "map.lower_bound(" << x << ") = ";
+	if ( cl_bound == map.cend() ) std::cout << "end()\n"; else std::cout << *cl_bound << "\n";
 
 	return 0;
 }

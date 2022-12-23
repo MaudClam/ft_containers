@@ -48,15 +48,19 @@ public:
 	/* Member classes */
 
 	class value_compare {
-	private:
-		key_compare k_compare;
+	protected:
+		key_compare	comp;
 	public:
 		value_compare() {}
 		~value_compare() {}
-		bool operator()(pointer x, pointer y)  {
-			return ( k_compare(x->first, y->first) ); }
-		bool operator()(value_type x, value_type y)  {
-			return ( k_compare(x.first, y.first) ); }
+		bool operator()(pointer x, pointer y) const {
+			return ( comp(x->first, y->first) ); }
+		bool operator()(const value_type& x, const value_type& y) const {
+			return ( comp(x.first, y.first) ); }
+		bool operator()(const value_type& x, pointer y) const {
+			return ( comp(x.first, y->first) ); }
+		bool operator()(pointer x, const value_type& y) const {
+			return ( comp(x->first, y.first) ); }
 	};
 		
 	/* Member types */
@@ -73,6 +77,7 @@ private:
 	/* Member objects */
 	
 	tree_type										tree;
+	key_compare										k_comp;
 	value_compare									compare;
 	allocator_type									allocator;
 	
@@ -123,7 +128,7 @@ public:
 		return ( node->value->second );
 	}
 	
-	mapped_type&	operator[]( const Key& key ) {
+	mapped_type&	operator[]( const key_type& key ) {
 		node_pointer node = findKey(key);
 		if (node == NULL) {
 			try {
@@ -139,45 +144,45 @@ public:
 	}
 
 	/* Iterators */
-		
-	class iterator : public iterator_type {
+	template<bool isConst>
+	class common_iterator : public iterator_type {
 	private:
-		node_pointer		ptr;
-		node_pointer		keeper_max;
+		ft::conditional_t<isConst, const node_pointer, node_pointer>	ptr;
+		node_pointer													max_keeper;
 	public:
-
-		iterator()
+		common_iterator()
 		:
 			ptr(NULL),
-			keeper_max(NULL)
+			max_keeper(NULL)
 		{}
 
-		iterator(node_pointer node, node_pointer keeper_max = NULL)
+		common_iterator(node_pointer node, node_pointer max_keeper = NULL)
 		:
 			ptr(node),
-			keeper_max(keeper_max)
+			max_keeper(max_keeper)
 		{}
 		
-		iterator(const iterator& other) {
+		common_iterator(const common_iterator& other)
+		:
+			ptr(other.ptr),
+			max_keeper(other.max_keeper)
+		{}
+		
+		common_iterator&	operator=( const common_iterator& other ) {
 			if (ptr != other.ptr) {
 				this->ptr = other.ptr;
-				this->keeper_max = other.keeper_max;
+				this->max_keeper = other.max_keeper;
 			}
-		}
-		
-		iterator&	operator=( const iterator& other ) {
-			if (ptr != other.ptr)
-				this->ptr = other.ptr;
 			return ( *this );
 		}
 				
-		~iterator() {}
+		~common_iterator() {}
 
-		reference	operator*() const { return *ptr->value; }
+		ft::conditional_t<isConst, const_reference, reference>	operator*() const { return *ptr->value; }
 		
-		pointer		operator->() const { return ptr->value; }
+		ft::conditional_t<isConst, const_pointer, pointer>		operator->() const { return ptr->value; }
 
-		iterator	operator++(void) {
+		common_iterator	operator++(void) {
 			if (ptr != NULL) {
 				if (ptr->right != NULL) {
 					ptr = ptr->right;
@@ -192,23 +197,23 @@ public:
 					}
 					ptr = ptr->parent;
 				}
-				keeper_max = ptr;
+				max_keeper = ptr;
 				ptr = u_nullptr;
 				return (*this);
 			}
 			return (*this);
 		}
 
-		iterator	operator++(int) {
+		common_iterator	operator++(int) {
 			iterator tmp = *this;
 			++(*this);
 			return ( tmp );
 		}
 		
-		iterator	operator--(void) {
+		common_iterator	operator--(void) {
 			if (ptr == u_nullptr) {
-				ptr = keeper_max;
-				keeper_max = NULL;
+				ptr = max_keeper;
+				max_keeper = NULL;
 				return (*this);
 			}
 			if (ptr != NULL) {
@@ -231,22 +236,26 @@ public:
 			return (*this);
 		}
 
-		iterator	operator--(int) {
+		common_iterator	operator--(int) {
 			iterator tmp = *this;
 			--(*this);
 			return ( tmp );
 		}
 	
-		bool	operator==(iterator other) const { return (ptr == other.ptr); }
-		bool	operator!=(iterator other) const { return (!(ptr == other.ptr)); }
+		bool	operator==(common_iterator other) const { return (ptr == other.ptr); }
+		bool	operator!=(common_iterator other) const { return (!(ptr == other.ptr)); }
 
-	}; /* class iterator_node end */
+	}; /* class common_iterator_node end */
 	
-	typedef ft::pair<iterator, bool>	iterator_bool;
+	typedef common_iterator<false>						iterator;
+	typedef common_iterator<true> 						const_iterator;
+	typedef ft::pair<iterator, bool>					iterator_bool;
 
 	iterator 		begin() const { return iterator(tree.findMin()); }
+	const_iterator 	cbegin() const { return const_iterator(tree.findMin()); }
 
 	iterator		end() const { return iterator(u_nullptr, tree.findMax()); };
+	const_iterator	cend() const { return const_iterator(u_nullptr, tree.findMax()); };
 
 	/* Capacity */
 
@@ -305,7 +314,7 @@ public:
 		return (first);
 	}
 	
-	size_type		erase( const Key& key ) {
+	size_type		erase( const key_type& key ) {
 		size_type s = size();
 		tree.deleteNode(findKey(key));
 		return (size() - s);
@@ -313,7 +322,7 @@ public:
 	
 	/* Modifiers */
 
-	size_type count( const Key& key ) const { return (findKey(key) == NULL); }
+	size_type count( const key_type& key ) const { return (findKey(key) == NULL); }
 	
 	void 			swap( map& other ) {
 		node_pointer	tmp = tree.get_root();
@@ -326,15 +335,53 @@ public:
 	
 	/* Lookup */
 	
-	iterator find( const Key& key ) {
-		node_pointer node = findKey(key);
+	iterator 		find( const key_type* key ) {
+		node_pointer node = findKey(*key);
 		if (node == NULL)
 			return (end());
 		return ( inerator(node) );
 	}
 	
-//	const_iterator find( const Key& key ) const;
+	const_iterator 	find( const key_type& key ) const {
+		node_pointer node = findKey(key);
+		if (node == NULL)
+			return (end());
+		return ( const_iterator(node) );
+	}
 	
+	iterator		lower_bound( const key_type* key) {
+		node_pointer node = tree.findMin();
+		while (node != NULL && k_comp(node->value->first, *key)) {
+			node = tree.findNextNode(node);
+		}
+		if (node == NULL)
+			return ( end() );
+		return ( iterator(node) );
+	}
+
+	const_iterator	lower_bound( const key_type& key ) const {
+		node_pointer node = tree.findMin();
+		while (node != NULL && k_comp(node->value->first, key)) {
+			node = tree.findNextNode(node);
+		}
+		if (node == NULL)
+			return ( cend() );
+		return ( const_iterator(node) );
+	}
+	
+	iterator		upper_bound( const key_type* key ) {
+		node_pointer node = tree.findMin();
+		while (node != NULL && k_comp(node->value->first, *key)) {
+			node = tree.findNextNode(node);
+		}
+		if (node == NULL)
+			return ( end() );
+		return ( iterator(node) );
+
+	}
+
+	const_iterator	upper_bound( const key_type& key ) const;
+
 	/* Several internal functions */
 	
 	void			printIteratively(void) { tree.printTreeIteratively(false); }
@@ -357,7 +404,7 @@ private:
 		}
 	}
 	
-	node_pointer	findKey( const key_type& key ) {
+	node_pointer	findKey( const key_type& key ) const {
 		value_type value( key, mapped_type() );
 		return tree.findNode( &value );
 	}

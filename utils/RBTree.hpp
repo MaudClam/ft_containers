@@ -262,7 +262,7 @@ public:
 		}
 	}
 	
-	node_pointer	findNode(const value_type& value) {
+	node_pointer	findNode(const value_type& value) const {
 		node_pointer node = root;
 		while (node != NULL) {
 			if ( !compare(value, node->value) && !compare(node->value, value) )
