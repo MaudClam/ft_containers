@@ -18,93 +18,119 @@
 # define END			9			/* End key to be stored */
 
 template< typename T1, typename T2 >
-void fill_map(ft::map<T1,T2>& map) {
-	for (int i = END; i >= START; --i) {
-		map[i] = 10 * i + 100 * i + i;
-//		map.insert( map.begin(), ft::pair<T1,T2>(i, 10 * i + 100 * i + i) );
-	}
+std::ostream& operator<<(std::ostream& o, ft::pair<T1, T2>& pair) {
+	o << pair.first << "-" << pair.second;
+	return o;
 }
 
 template< typename T1, typename T2 >
-void fill_map(ft::map<const T1,T2>& map) {
+std::ostream& operator<<(std::ostream& o, std::pair<T1, T2>& pair) {
+	o << pair.first << "-" << pair.second;
+	return o;
+}
+
+template< typename Container >
+void fill_container(Container& c) {
 	for (int i = END; i >= START; --i) {
-		map[i] = 10 * i + 100 * i + i;
-//		map.insert( map.begin(), ft::pair<T1,T2>(i, 10 * i + 100 * i + i) );
+		c[i] = 10 * i + 100 * i + i;
 	}
 }
 
-typedef int		Key;
-typedef int		T;
+template< typename Container >
+void print_container(Container& c) {
+	typename Container::iterator it;
+	for (it = c.begin(); it != c.end(); ++it) {
+		std::cout << *it << " ";
+	}
+	std::cout << std::endl;
+}
+
+template< typename Container >
+void print_rev_container(Container& c) {
+	typename Container::reverse_iterator it;
+	for (it = c.rbegin(); it != c.rend(); ++it) {
+		std::cout << *it << " ";
+	}
+	std::cout << std::endl;
+}
+
+template< typename Container >
+void print_container_decrement(Container& c) {
+	typename Container::iterator it;
+	it = c.end();
+	while (it != c.begin())
+		std::cout << *(--it) << " ";
+	std::cout << std::endl;
+}
+
+template< typename Container >
+void print_rev_container_decrement(Container& c) {
+	typename Container::reverse_iterator it;
+	it = c.rend();
+	while (it != c.rbegin())
+		std::cout << *(--it) << " ";
+	std::cout << std::endl;
+}
+
+typedef int			Key;
+typedef int			T;
 
 int main(int, const char**)
 {
-	ft::map<Key,T>	map, mapp;
-	fill_map(map);
+	std::map<Key,T>	map;
+	ft::map<Key,T>	my_map;
+	fill_container(map);
+	fill_container(my_map);
 
-	ft::pair<ft::map<Key,T>::iterator, bool> it_bool;
-	it_bool = map.insert( ft::make_pair<Key,T>(5,1) );
-	std::cout << "insert(5-1) return " << *it_bool.first << (it_bool.second ? " true\n" : " false\n");
-	it_bool = map.insert( ft::make_pair<Key,T>(10,10) );
-	std::cout << "insert(10-10) return "  << *it_bool.first << (it_bool.second ? " true\n" : " false\n");
-	std::cout << std::endl;
-
-	ft::map<Key,T>::iterator pos = map.begin();
-	++pos; ++pos; ++pos;
-	ft::map<Key,T>::iterator it = map.insert( pos, ft::make_pair<Key,T>(5,1) );
-	std::cout << "insert(5-1) return " << *it << " \n";
-	it = map.insert( pos, ft::make_pair<Key,T>(-1,1) );
-	std::cout << "insert(-1-1) return "   << *it << " \n";
-	std::cout << std::endl;
-
-	map.printIteratively();
-	std::cout << std::endl;
-
-	std::cout << "erase(" << *pos << ") return ";
-	pos = map.erase(pos);
-	std::cout << *pos << "\n";
-	std::cout << std::endl;
 	
-	map.printIteratively();
+	print_container(map);
+	print_container(my_map);
 	std::cout << std::endl;
 
-	ft::map<Key,T>::iterator first = map.begin();
-	++first; ++first; ++first;
-	ft::map<Key,T>::iterator last = first;
-	++last; ++last;
-	std::cout << "erase(" << *first << ", ";
-	if ( last == map.end() ) std::cout << "end()"; else std::cout << *last;
-	std::cout << ") return ";
-	pos = map.erase(first, last);
-	if ( pos == map.end() ) std::cout << "end()\n"; else std::cout << *pos << "\n";
+	print_rev_container(map);
+	print_rev_container(my_map);
 	std::cout << std::endl;
 
-	map.printIteratively();
+	print_container_decrement(map);
+	print_container_decrement(my_map);
 	std::cout << std::endl;
 
-	mapp[1] = 2;
-	mapp[3] = 4;
-	mapp[3] = 7;
+	print_rev_container_decrement(map);
+	print_rev_container_decrement(my_map);
+	std::cout << std::endl;
+
+	std::map<Key,T>	map1;
+	fill_container(map1);
+	ft::map<Key,T>	my_map1;
+	fill_container(my_map1);
 	
-	map.swap(mapp);
-
-	try {
-		map = mapp;
-	}
-	catch (std::exception &e) {
-		std::cerr << e.what() << std::endl;
-	}
-
-	map.printRecursively();
+	std::cout 	<< std::boolalpha << "map == map1: "
+				<<	(map == map1) << std::endl;
+	std::cout 	<< std::boolalpha << "my_map == my_map1: "
+				<<	(my_map == my_map1) << std::endl;
 	std::cout << std::endl;
-	
-	Key x = 2;
-	ft::map<Key,T>::iterator l_bound( map.lower_bound(&x) );
-	std::cout << "map.lower_bound(" << x << ") = ";
-	if ( l_bound == map.end() ) std::cout << "end()\n"; else std::cout << *l_bound << "\n";
-	x = 3;
-	ft::map<Key,T>::const_iterator cl_bound( map.lower_bound(x) );
-	std::cout << "map.lower_bound(" << x << ") = ";
-	if ( cl_bound == map.cend() ) std::cout << "end()\n"; else std::cout << *cl_bound << "\n";
+
+	my_map[3] = 3;
+	map[3] = 3;
+	std::cout 	<< std::boolalpha << "map == map1: "
+				<<	(map == map1) << std::endl;
+	std::cout 	<< std::boolalpha << "my_map == my_map1: "
+				<<	(my_map == my_map1) << std::endl;
+	std::cout << std::endl;
+
+
+	std::cout 	<< std::boolalpha << "map < map1: "
+				<<	(map < map1) << std::endl;
+	std::cout 	<< std::boolalpha << "my_map < my_map1: "
+				<<	(my_map < my_map1) << std::endl;
+	std::cout << std::endl;
+
+	map1 = map;
+	my_map1 = my_map;
+
+	print_rev_container_decrement(map);
+	print_rev_container_decrement(my_map1);
+	std::cout << std::endl;
 
 	return 0;
 }

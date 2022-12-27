@@ -45,6 +45,10 @@ struct is_same< U, U > {
 template< typename U, typename V >
 using is_same_v = typename is_same<U,V>::value;
 
+/* Implementation std::is_same  end */
+
+/* Implementation remove_const */
+
 template <typename T>
 struct remove_const {
 	using type = T;
@@ -57,6 +61,10 @@ struct remove_const <const T> {
 
 template< typename T >
 using remove_const_t = typename remove_const<T>::type;
+
+/* Implementation remove_const end */
+
+/* Implementation nullptr end */
 
 static class nullptr_t {
 public:
@@ -71,10 +79,84 @@ public:
 
 private:
 		void operator&() const;
-	
+		
 } u_nullptr = {};
 
-/* Implementation std::is_same  end */
+/* Implementation nullptr  end */
+
+/* Implementation enable_if */
+
+template<bool B, class T = void>
+	struct enable_if {};
+	
+template<class T>
+	struct enable_if<true, T>{ using type = T; };
+
+template<bool B, class T = void>
+using	enable_if_t = typename enable_if<B, T>::type;
+
+/* Implementation enable_if end */
+
+/* Implementation lexicographical_compare */
+
+template< class InputIt1, class InputIt2 >
+bool lexicographical_compare( InputIt1 first1, InputIt1 last1,
+							 InputIt2 first2, InputIt2 last2 ) {
+	for (; (first1 != last1) && (first2 != last2); ++first1, (void) ++first2)
+	{
+		if (*first1 < *first2)
+			return true;
+		if (*first2 < *first1)
+			return false;
+	}
+	return (first1 == last1) && (first2 != last2);
+}
+
+template< class InputIt1, class InputIt2, class Compare >
+bool lexicographical_compare( InputIt1 first1, InputIt1 last1,
+							 InputIt2 first2, InputIt2 last2, Compare comp ) {
+	for (; (first1 != last1) && (first2 != last2); ++first1, (void) ++first2)
+	{
+		if (comp(*first1, *first2))
+			return true;
+		if (comp(*first2, *first1))
+			return false;
+	}
+	return (first1 == last1) && (first2 != last2);
+}
+
+/* Implementation lexicographical_compare end */
+
+/* Implementation equal */
+
+template< class InputIt1, class InputIt2 >
+bool equal( InputIt1 first1, InputIt1 last1,
+		   InputIt2 first2 ) {
+	for (; first1 != last1; ++first1, ++first2) {
+		if (!(*first1 == *first2)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+template< class InputIt1,
+		  class InputIt2,
+		  class BinaryPredicate >
+bool equal( InputIt1 first1,
+			InputIt1 last1,
+			InputIt2 first2,
+			BinaryPredicate p ) {
+	for (; first1 != last1; ++first1, ++first2) {
+		if (!p(*first1, *first2)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/* Implementation equal end */
+
 
 } /* namespace ft end */
 
