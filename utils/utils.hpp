@@ -157,6 +157,116 @@ bool equal( InputIt1 first1,
 
 /* Implementation equal end */
 
+/* Implementation is_integral */
+
+template <typename>
+struct is_integral_base {
+
+	static const bool	value = false;
+};
+
+template <>
+struct is_integral_base<bool> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<char> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<char16_t> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<char32_t> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<wchar_t> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<signed char> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<short int> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<int> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<long int> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<long long int> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<unsigned char> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<unsigned short int> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<unsigned int> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<unsigned long int> {
+
+	static const bool	value = true;
+};
+
+template <>
+struct is_integral_base<unsigned long long int> {
+
+	static const bool	value = true;
+};
+
+template < typename T>
+struct is_integral : public is_integral_base<typename remove_const<T>::type> {};
+
+
+/* Implementation is_integral end */
+
+size_t	upDegree2(size_t num) {
+	size_t i = 2;
+	while (i < num)
+		i *= 2;
+	return (i);
+}
 
 } /* namespace ft end */
 

@@ -1,136 +1,116 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mclam <mclam@student.42wolfsburg.de>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/04 12:02:48 by mclam             #+#    #+#             */
-/*   Updated: 2022/12/04 12:02:48 by mclam            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <iostream>
-#include <map>
-#include "map.hpp"
+#include <string>
+#include <deque>
+#if 1 //CREATE A REAL STL EXAMPLE
+	#include <map>
+	#include <stack>
+	#include <vector>
+	namespace ft = std;
+#else
+	#include <map.hpp>
+	#include <stack.hpp>
+	#include <vector.hpp>
+#endif
 
-# define START			1			/* Start key to be stored */
-# define END			9			/* End key to be stored */
+#include <stdlib.h>
 
-template< typename T1, typename T2 >
-std::ostream& operator<<(std::ostream& o, ft::pair<T1, T2>& pair) {
-	o << pair.first << "-" << pair.second;
-	return o;
-}
-
-template< typename T1, typename T2 >
-std::ostream& operator<<(std::ostream& o, std::pair<T1, T2>& pair) {
-	o << pair.first << "-" << pair.second;
-	return o;
-}
-
-template< typename Container >
-void fill_container(Container& c) {
-	for (int i = END; i >= START; --i) {
-		c[i] = 10 * i + 100 * i + i;
-	}
-}
-
-template< typename Container >
-void print_container(Container& c) {
-	typename Container::iterator it;
-	for (it = c.begin(); it != c.end(); ++it) {
-		std::cout << *it << " ";
-	}
-	std::cout << std::endl;
-}
-
-template< typename Container >
-void print_rev_container(Container& c) {
-	typename Container::reverse_iterator it;
-	for (it = c.rbegin(); it != c.rend(); ++it) {
-		std::cout << *it << " ";
-	}
-	std::cout << std::endl;
-}
-
-template< typename Container >
-void print_container_decrement(Container& c) {
-	typename Container::iterator it;
-	it = c.end();
-	while (it != c.begin())
-		std::cout << *(--it) << " ";
-	std::cout << std::endl;
-}
-
-template< typename Container >
-void print_rev_container_decrement(Container& c) {
-	typename Container::reverse_iterator it;
-	it = c.rend();
-	while (it != c.rbegin())
-		std::cout << *(--it) << " ";
-	std::cout << std::endl;
-}
-
-typedef int			Key;
-typedef int			T;
-
-int main(int, const char**)
+#define MAX_RAM 4294967296
+#define BUFFER_SIZE 4096
+struct Buffer
 {
-	std::map<Key,T>	map;
-	ft::map<Key,T>	my_map;
-	fill_container(map);
-	fill_container(my_map);
+	int idx;
+	char buff[BUFFER_SIZE];
+};
 
+
+#define COUNT (MAX_RAM / (int)sizeof(Buffer))
+
+template<typename T>
+class MutantStack : public ft::stack<T>
+{
+public:
+	MutantStack() {}
+	MutantStack(const MutantStack<T>& src) { *this = src; }
+	MutantStack<T>& operator=(const MutantStack<T>& rhs) 
+	{
+		this->c = rhs.c;
+		return *this;
+	}
+	~MutantStack() {}
+
+	typedef typename ft::stack<T>::container_type::iterator iterator;
+
+	iterator begin() { return this->c.begin(); }
+	iterator end() { return this->c.end(); }
+};
+
+int main(int argc, char** argv) {
+	if (argc != 2)
+	{
+		std::cerr << "Usage: ./test seed" << std::endl;
+		std::cerr << "Provide a seed please" << std::endl;
+		std::cerr << "Count value:" << COUNT << std::endl;
+		return 1;
+	}
+	const int seed = atoi(argv[1]);
+	srand(seed);
+
+	ft::vector<std::string> vector_str;
+	ft::vector<int> vector_int;
+	ft::stack<int> stack_int;
+	ft::vector<Buffer> vector_buffer;
+	ft::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
+	ft::map<int, int> map_int;
+
+	for (int i = 0; i < COUNT; i++)
+	{
+		vector_buffer.push_back(Buffer());
+	}
+
+	for (int i = 0; i < COUNT; i++)
+	{
+		const int idx = rand() % COUNT;
+		vector_buffer[idx].idx = 5;
+	}
+	ft::vector<Buffer>().swap(vector_buffer);
+
+	try
+	{
+		for (int i = 0; i < COUNT; i++)
+		{
+			const int idx = rand() % COUNT;
+			vector_buffer.at(idx);
+			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
+		}
+	}
+	catch(const std::exception& e)
+	{
+		//NORMAL ! :P
+	}
 	
-	print_container(map);
-	print_container(my_map);
+	for (int i = 0; i < COUNT; ++i)
+	{
+		map_int.insert(ft::make_pair(rand(), rand()));
+	}
+
+	int sum = 0;
+	for (int i = 0; i < 10000; i++)
+	{
+		int access = rand();
+		sum += map_int[access];
+	}
+	std::cout << "should be constant with the same seed: " << sum << std::endl;
+
+	{
+		ft::map<int, int> copy = map_int;
+	}
+	MutantStack<char> iterable_stack;
+	for (char letter = 'a'; letter <= 'z'; letter++)
+		iterable_stack.push(letter);
+	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
+	{
+		std::cout << *it;
+	}
 	std::cout << std::endl;
-
-	print_rev_container(map);
-	print_rev_container(my_map);
-	std::cout << std::endl;
-
-	print_container_decrement(map);
-	print_container_decrement(my_map);
-	std::cout << std::endl;
-
-	print_rev_container_decrement(map);
-	print_rev_container_decrement(my_map);
-	std::cout << std::endl;
-
-	std::map<Key,T>	map1;
-	fill_container(map1);
-	ft::map<Key,T>	my_map1;
-	fill_container(my_map1);
-	
-	std::cout 	<< std::boolalpha << "map == map1: "
-				<<	(map == map1) << std::endl;
-	std::cout 	<< std::boolalpha << "my_map == my_map1: "
-				<<	(my_map == my_map1) << std::endl;
-	std::cout << std::endl;
-
-	my_map[3] = 3;
-	map[3] = 3;
-	std::cout 	<< std::boolalpha << "map == map1: "
-				<<	(map == map1) << std::endl;
-	std::cout 	<< std::boolalpha << "my_map == my_map1: "
-				<<	(my_map == my_map1) << std::endl;
-	std::cout << std::endl;
-
-
-	std::cout 	<< std::boolalpha << "map < map1: "
-				<<	(map < map1) << std::endl;
-	std::cout 	<< std::boolalpha << "my_map < my_map1: "
-				<<	(my_map < my_map1) << std::endl;
-	std::cout << std::endl;
-
-	map1 = map;
-	my_map1 = my_map;
-
-	print_rev_container_decrement(map);
-	print_rev_container_decrement(my_map1);
-	std::cout << std::endl;
-
-	return 0;
+	return (0);
 }

@@ -31,7 +31,6 @@ template<
 public:
 	
 	/* Member types */
-	
 	typedef ft::map<Key,T,Compare,Allocator>		self;
 	typedef ft::remove_const_t<Key>					key_type;
 	typedef T										mapped_type;
@@ -46,7 +45,6 @@ public:
 	typedef typename Allocator::const_pointer		const_pointer;
 
 	/* Member classes */
-
 	class value_compare {
 	protected:
 		key_compare	comp;
@@ -73,9 +71,7 @@ public:
 			value_type >								iterator_type;
 
 private:
-
 	/* Member objects */
-	
 	tree_type										tree;
 	key_compare										k_comp;
 	value_compare									compare;
@@ -142,9 +138,8 @@ public:
 		}
 		return (node->value->second);
 	}
-
-	/* Iterators */
 	
+	/* Member classes */
 	template<bool isConst>
 	class common_iterator : public iterator_type {
 	private:
@@ -181,7 +176,7 @@ public:
 		
 		ft::conditional_t<isConst, const_pointer, pointer>		operator->() const { return ptr->value; }
 
-		common_iterator	operator++(void) {
+		common_iterator&	operator++(void) {
 			if (ptr != NULL) {
 				if (ptr->right != NULL) {
 					ptr = ptr->right;
@@ -201,13 +196,13 @@ public:
 			return (*this);
 		}
 
-		common_iterator	operator++(int) {
-			iterator tmp = *this;
+		common_iterator		operator++(int) {
+			common_iterator tmp = *this;
 			++(*this);
 			return ( tmp );
 		}
 		
-		common_iterator	operator--(void) {
+		common_iterator&	operator--(void) {
 			if (ptr == u_nullptr) {
 				ptr = max;
 				return (*this);
@@ -231,33 +226,36 @@ public:
 			return (*this);
 		}
 
-		common_iterator	operator--(int) {
-			iterator tmp = *this;
+		common_iterator		operator--(int) {
+			common_iterator tmp = *this;
 			--(*this);
 			return ( tmp );
 		}
 	
-		bool	operator==(common_iterator other) const { return (ptr == other.ptr); }
-		bool	operator!=(common_iterator other) const { return (!(ptr == other.ptr)); }
+		bool	operator==(common_iterator other) const { return( ptr == other.ptr ); }
+		bool	operator!=(common_iterator other) const { return( !(this == other) ); }
 
-	}; /* class common_iterator_node end */
-	
+	}; /* class common_iterator end */
+
+	/* Member types */
 	typedef common_iterator<false>						iterator;
 	typedef common_iterator<true> 						const_iterator;
 	typedef ft::pair<iterator, bool>					iterator_bool;
 	typedef ft::reverse_iterator<iterator>				reverse_iterator;
 	typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
-
-	iterator 				begin() const { return iterator(tree.findMin(), tree.findMax()); }
+	
+	/* Iterators */
+	
+	iterator 				begin() { return iterator(tree.findMin(), tree.findMax()); }
 	const_iterator 			cbegin() const { return const_iterator(tree.findMin(), tree.findMax()); }
 
-	iterator				end() const { return iterator(u_nullptr, tree.findMax()); };
+	iterator				end() { return iterator(u_nullptr, tree.findMax()); };
 	const_iterator			cend() const { return const_iterator(u_nullptr, tree.findMax()); };
 
-	reverse_iterator 		rbegin() const { return reverse_iterator(end()); }
+	reverse_iterator 		rbegin() { return reverse_iterator(end()); }
 	const_reverse_iterator 	crbegin() const { return const_reverse_iterator(cend()); }
 
-	reverse_iterator		rend() const { return reverse_iterator(begin()); };
+	reverse_iterator		rend() { return reverse_iterator(begin()); };
 	const_reverse_iterator	crend() const { return const_reverse_iterator(cbegin()); };
 
 	/* Capacity */
@@ -336,7 +334,7 @@ public:
 	
 	size_type count( const key_type& key ) const { return (findKey(key) == NULL); }
 	
-	iterator 		find( const key_type* key ) {
+	iterator 		find( const key_type& key ) {
 		node_pointer node = findKey(*key);
 		if (node == NULL)
 			return (end());
@@ -351,7 +349,7 @@ public:
 	}
 	
 	ft::pair<iterator,iterator>
-					equal_range( const key_type* key ) {
+					equal_range( const key_type& key ) {
 		return ft::pair<iterator,iterator>( lower_bound(key),upper_bound(key) );
 	}
 
@@ -360,7 +358,7 @@ public:
 		return ft::pair<const_iterator,const_iterator>( lower_bound(key),upper_bound(key) );
 	}
 	
-	iterator		lower_bound( const key_type* key) {
+	iterator		lower_bound( const key_type& key) {
 		node_pointer node = tree.findMin();
 		while (node != NULL && k_comp(node->value->first, *key)) {
 			node = tree.findNextNode(node);
@@ -380,7 +378,7 @@ public:
 		return ( const_iterator(node) );
 	}
 	
-	iterator		upper_bound( const key_type* key ) {
+	iterator		upper_bound( const key_type& key ) {
 		node_pointer node = tree.findMin();
 		while (node != NULL && !k_comp(*key, node->value->first)) {
 			node = tree.findNextNode(node);
