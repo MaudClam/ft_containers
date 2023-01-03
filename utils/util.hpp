@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #ifndef UTILS_HPP
-#define UTILS_HPP
+# define UTILS_HPP
 
 # include <iostream>
 
@@ -20,47 +20,24 @@ namespace ft {
 /* Implementation std::conditional_t */
 
 template< bool B, typename T, typename F >
-struct conditional { using type = T; };
+struct conditional { typedef T type; };
 
 template< typename T, typename F >
-struct conditional< false, T, F > { using type = F; };
-
-template< bool B, class T, class F >
-using conditional_t = typename conditional<B,T,F>::type;
+struct conditional< false, T, F > { typedef F type; };
 
 /* Implementation std::conditional_t end */
-
-/* Implementation std::is_same */
-
-template< typename U, typename V >
-struct is_same {
-	static const bool value = false;
-};
-
-template< typename U >
-struct is_same< U, U > {
-	static const bool value = true;
-};
-
-template< typename U, typename V >
-using is_same_v = typename is_same<U,V>::value;
-
-/* Implementation std::is_same  end */
 
 /* Implementation remove_const */
 
 template <typename T>
 struct remove_const {
-	using type = T;
+	typedef T type;
 };
 
 template <typename T>
 struct remove_const <const T> {
-	using type = T;
+	typedef T type;
 };
-
-template< typename T >
-using remove_const_t = typename remove_const<T>::type;
 
 /* Implementation remove_const end */
 
@@ -90,10 +67,7 @@ template<bool B, class T = void>
 	struct enable_if {};
 	
 template<class T>
-	struct enable_if<true, T>{ using type = T; };
-
-template<bool B, class T = void>
-using	enable_if_t = typename enable_if<B, T>::type;
+	struct enable_if<true, T>{ typedef T type; };
 
 /* Implementation enable_if end */
 
@@ -260,13 +234,6 @@ struct is_integral : public is_integral_base<typename remove_const<T>::type> {};
 
 
 /* Implementation is_integral end */
-
-size_t	upDegree2(size_t num) {
-	size_t i = 2;
-	while (i < num)
-		i *= 2;
-	return (i);
-}
 
 } /* namespace ft end */
 

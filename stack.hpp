@@ -22,6 +22,9 @@ template<
 	class T,
 	class Container = ft::vector<T>
 > class stack {
+protected:
+	/* Member objects */
+	Container	c;
 public:
 	/* Member types */
 	typedef Container							container_type;
@@ -58,10 +61,8 @@ public:
 	void pop() {
 		c.pop_back();
 	}
-protected:
-	/* Member objects */
-	Container	c;
 };
+
 /* Non-member functions */
 template< class T, class Container >
 bool operator==( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs ) {

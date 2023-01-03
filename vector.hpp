@@ -11,11 +11,11 @@
 /* ************************************************************************** */
 
 #ifndef VECTOR_HPP
-#define VECTOR_HPP
+# define VECTOR_HPP
 
 # include <iostream>
-# include "iterator.hpp"
-# include "utils.hpp"
+# include "./utils/iterator.hpp"
+# include "./utils/util.hpp"
 
 namespace ft {
 
@@ -53,6 +53,7 @@ public:
 	class common_iterator : public iterator_type {
 	protected:
 		pointer					ptr;
+		friend class common_iterator<!isConst>;
 	public:
 		common_iterator() : ptr(NULL) {}
 		
@@ -60,18 +61,24 @@ public:
 		
 		common_iterator(const common_iterator& other) : ptr(other.ptr) {}
 		
+		common_iterator( const common_iterator<!isConst>& other) : ptr(other.ptr) {}
+		
 		~common_iterator() {}
 		
-		common_iterator&		operator=( const common_iterator& other ) {
+		common_iterator&		operator=(const common_iterator& other ) {
 			this->ptr = other.ptr;
 			return ( *this );
 		}
-		bool 					operator==(common_iterator other) const { return( ptr == other.ptr ); }
-		bool 					operator!=(common_iterator other) const { return( !(*this == other) ); }
-		ft::conditional_t<isConst, const_reference, reference>
-		operator*() const { return *ptr; }
-		ft::conditional_t<isConst, const_pointer, pointer>
-		operator->() const { return ptr; }
+		common_iterator&		operator=(const common_iterator<!isConst>& other ) {
+			this->ptr = other.ptr;
+			return ( *this );
+		}
+		bool 					operator==(common_iterator other) { return( ptr == other.ptr ); }
+		bool 					operator!=(common_iterator other) { return( !(*this == other) ); }
+		typename ft::conditional<isConst, const_reference, reference>::type
+								operator*() const { return *ptr; }
+		typename ft::conditional<isConst, const_pointer, pointer>::type
+								operator->() const { return ptr; }
 		common_iterator&		operator++(void) { ++ptr; return (*this); }
 		common_iterator			operator++(int) {
 			common_iterator tmp = *this;
@@ -84,7 +91,7 @@ public:
 			--(*this);
 			return (tmp);
 		}
-		common_iterator&		operator+=(const difference_type& n) {
+		common_iterator&		operator+=(const difference_type n) {
 			difference_type m = n;
 			if (m >= 0)
 				while (m--) ++*this;
@@ -92,107 +99,101 @@ public:
 				while (m++) --*this;
 			return (*this);
 		}
-		friend common_iterator	operator+(const common_iterator& lhs, const difference_type& n) {
-			common_iterator tmp = lhs;
-			return(tmp += n);
-		}
-		friend common_iterator	operator+(const difference_type& n, const common_iterator& rhs) {
+//		friend common_iterator	operator+(const common_iterator& lhs, const difference_type& n) {
+//			common_iterator tmp = lhs;
+//			return(tmp += n);
+//		}
+		friend common_iterator	operator+(const difference_type n, const common_iterator& rhs) {
 			common_iterator tmp = rhs;
 			return(tmp += n);
 		}
-		common_iterator&		operator-=(const difference_type& n) { return (*this += -n); }
-		common_iterator			operator-(const difference_type& n) {
+		friend common_iterator	operator+(const common_iterator& lhs, const difference_type n) {
+			common_iterator tmp = lhs;
+			return(tmp += n);
+		}
+		common_iterator&		operator-=(const difference_type n) { return (*this += -n); }
+		common_iterator			operator-(const difference_type n) {
 			common_iterator tmp = *this;
 			return(tmp -= n); }
-		friend difference_type	operator-( common_iterator& lhs,  common_iterator& rhs) {
-			difference_type n = 0;
-			if (lhs == rhs)
-				return (0);
-			if (lhs < rhs)
-				while (lhs != rhs) {++lhs; n++;}
-			else
-				while (lhs != rhs) {++rhs; n++;}
+//		difference_type	operator-(common_iterator it) {
+//			difference_type n = this->ptr - it.ptr;
+//			return(n);
+//		}
+		friend difference_type	operator-(common_iterator<isConst> lhs,
+										  common_iterator<!isConst> rhs) {
+			difference_type n = lhs.ptr - rhs.ptr;
 			return(n);
 		}
-		ft::conditional_t<isConst, const_reference, reference>
-		operator[](size_type n) const { return(*(*this + n)); }
-		bool					operator<(common_iterator& other) { return (other.ptr - this->ptr > 0); }
-		bool					operator<=(const common_iterator& other) const { return (*this < other || *this == other); }
-		bool					operator>(const common_iterator& other) const { return ( !(*this <= other) ); }
-		bool					operator>=(const common_iterator& other) const { return ( !(*this < other) ); }
+		typename ft::conditional<isConst, const_reference, reference>::type
+								operator[](size_type n) const { return(*(*this + n)); }
+		bool					operator<(common_iterator other) { return (other.ptr - this->ptr > 0); }
+		bool					operator>(common_iterator other) { return ( other < *this ); }
+		bool					operator<=(common_iterator other) { return ( !(*this > other) ); }
+		bool					operator>=(common_iterator other) { return ( !(*this < other) ); }
 		
 	}; /* class common_iterator end */
 	
 	/* 	Member types */
-	typedef common_iterator<false>					iterator;
-	typedef common_iterator<true> 					const_iterator;
-	typedef ft::pair<iterator, bool>				iterator_bool;
-	typedef ft::reverse_iterator<iterator>			reverse_iterator;
-	typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+	typedef common_iterator<false>						iterator;
+	typedef common_iterator<true> 						const_iterator;
+	typedef ft::reverse_iterator<iterator, false>		reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator, true>	const_reverse_iterator;
 	
 	/* Member functions */
 	
 							vector()
 							:
-								cap(1),
+								cap(0),
 								sz(0),
 								alloc(),
-								arr( alloc.allocate(1) )
+								arr(NULL)
 							{}
 
-	explicit 				vector( const Allocator& alloc )
+	explicit 				vector( const Allocator& allocator )
 							:
-								cap(1),
+								cap(0),
 								sz(0),
-								alloc(alloc),
-								arr( alloc.allocate(cap) )
+								alloc(allocator),
+								arr(NULL)
 							{}
 	
 	explicit 				vector(size_type count,
-								   const T& value = T(),
-								   const Allocator& alloc = Allocator() )
+								   const value_type& value = T(),
+								   const Allocator& allocator = Allocator() )
 							:
-								cap(count),
-								sz(count),
-								alloc(alloc),
-								arr( alloc.allocate(cap) ) {
-		size_type	i = 0;
-		try {
-			for (; i < sz; ++i)
-				alloc.construct(arr + i, value);
-		} catch (...) {
-			for (size_type j = 0; j < i; ++j)
-				alloc.destroy(arr + j);
-			alloc.deallocate(arr, cap);
-			throw;
-		}
-	}
+								cap(0),
+								sz(0),
+								alloc(allocator) {
+	if (count > 0)
+		insert(begin(), count, value);
+}
 	
 	template<class InputIt>	vector(InputIt first,
 								   InputIt last,
-								   const Allocator& alloc = Allocator(),
+								   const Allocator& allocator = Allocator(),
 								   typename ft::enable_if<
 										!ft::is_integral<InputIt>::value,
 										InputIt
 										>::type* = 0 )
 							:
-								cap(1),
+								cap(0),
 								sz(0),
-								alloc(alloc),
-								arr( alloc.allocate(cap) ) { insert(begin(), first, last); }
+								alloc(allocator) {insert(begin(), first, last);}
 	
 							vector( const vector& other )
 							:
-								cap(1),
+								cap(0),
 								sz(0),
 								alloc(other.alloc),
-								arr( alloc.allocate(cap) ) { *this = other; }
+								arr(NULL) { *this = other; }
 	
-							~vector() { killArr(arr, sz, cap); }
+							~vector() { killArr(arr, sz, cap); sz = 0; cap = 0;}
 	
 	vector&					operator=( const vector& other ) {
 		size_type	i = 0;
-		value_type*	newArr = alloc.allocate(other.cap);
+		value_type*	newArr = NULL;
+		if (other.cap != 0)
+			newArr = alloc.allocate(other.cap);
 		try {
 			for (; i < other.sz; ++i)
 				alloc.construct(newArr + i, other.arr[i]);
@@ -210,37 +211,14 @@ public:
 	}
 	
 	void 					assign( size_type count, const T& value ) {
-		value_type*	clone = arrCopying(sz, 0, 0);
-		size_type	size = sz;
-		size_type	capacity = cap;
 		clear();
-		try {
-			insert(begin(), count, value);
-		} catch (...) {
-			arr = clone; clone = NULL;
-			sz = size;
-			cap = capacity;
-			throw ;
-		}
-		killArr(clone, size, capacity); clone = NULL;
+		insert(NULL, count, value);
 	}
 	
 	template<class InputIt>
 	void 					assign( InputIt first, InputIt last ) {
-		value_type*	clone = arrCopying(sz, 0, 0);
-		size_type	size = sz;
-		size_type	capacity = cap;
 		clear();
-		try {
-			insert(begin(), first, last);
-		} catch (...) {
-			arr = clone; clone = NULL;
-			sz = size;
-			cap = capacity;
-			throw ;
-		}
-		killArr(clone, size, capacity); clone = NULL;
-
+		insert(NULL, first, last);
 	}
 	
 	allocator_type 			get_allocator() const { return(alloc); }
@@ -277,15 +255,19 @@ public:
 	/* Iterators */
 	
 	iterator 				begin() { return iterator(arr); }
+	iterator 				begin() const { return iterator(arr); }
 	const_iterator 			cbegin() const { return const_iterator(arr); }
 	
 	iterator				end() { return iterator(arr + sz); };
+	iterator				end() const { return iterator(arr + sz); };
 	const_iterator			cend() const { return const_iterator(arr + sz); };
 	
 	reverse_iterator 		rbegin() { return reverse_iterator( end() ); }
+	reverse_iterator 		rbegin() const { return reverse_iterator( end() ); }
 	const_reverse_iterator 	crbegin() const { return const_reverse_iterator( cend() ); }
 	
 	reverse_iterator		rend() { return reverse_iterator( begin() ); };
+	reverse_iterator		rend() const { return reverse_iterator( begin() ); };
 	const_reverse_iterator	crend() const { return const_reverse_iterator( cbegin() ); };
 	
 	/* Capacity */
@@ -297,7 +279,7 @@ public:
 	size_type 				max_size() const { return (alloc.max_size()); }
 	
 	void					reserve(size_type capacity) {
-		if (capacity <= cap) return ;
+		if ( capacity <= cap && cap != 0 ) return ;
 		size_type	i = 0;
 		value_type*	newarr = alloc.allocate(capacity);
 		try {
@@ -332,12 +314,10 @@ public:
 								   size_type count,
 								   const value_type& value ) {
 		if (count == 0) return (pos);
-		if (cap == 0) { arr = alloc.allocate(1); ++cap; pos = begin(); }
-
-		size_type	posNum = posNumber(pos);
+		size_type	posNum = ( cap == 0 || pos == NULL ? 0 : posNumber(pos) );
 		size_type	distance = count;
 		size_type	newSize = sz + distance;
-		size_type	newCapacity = ( distance > sz ? newSize : ft::upDegree2(newSize) );
+		size_type	newCapacity = ( cap * 2 < newSize || pos == NULL ? newSize : cap * 2 );
 		value_type*	newArr = NULL;
 		value_type*	clone = NULL;
 
@@ -354,8 +334,7 @@ public:
 			}
 			killArr(arr, sz, cap);
 			arr = newArr;
-			newArr = NULL;
-			sz = newSize;
+			newArr = NULL; sz = newSize;
 			cap = newCapacity;
 		} else {
 			clone = arrCopying(cap, 0, 0);
@@ -365,8 +344,7 @@ public:
 					alloc.construct(arr + posNum + i, value);
 			} catch (...) {
 				killArr(arr, sz, cap);
-				arr = clone;
-				clone = NULL;
+				arr = clone; clone = NULL;
 				throw;
 			}
 			killArr(clone, sz, cap);
@@ -385,16 +363,12 @@ public:
 										InputIt
 										>::type* = 0 ) {
 		difference_type	dst = ft::distance(first, last);
-		if (dst <= 0)
-			throw std::out_of_range("ft::vector::insert:  out of range\n");
-		size_type		posNum = posNumber(pos);
-
-		value_type*		newArr = NULL;
-		value_type*		clone = NULL;
-		size_type		distance = (size_type)dst;
-		size_type		newSize = sz + distance;
-		size_type		newCapacity = (distance > sz ? newSize :
-									   ft::upDegree2(newSize));
+		size_type	posNum = ( cap == 0 || pos == NULL ? 0 : posNumber(pos) );
+		size_type	distance = (size_type)dst;
+		size_type	newSize = sz + distance;
+		size_type	newCapacity = ( cap * 2 < newSize || pos == NULL ? newSize : cap * 2 );
+		value_type*	newArr = NULL;
+		value_type*	clone = NULL;
 
 		if (cap < newSize) {
 			newArr = arrCopying( newCapacity, posNum, distance );
@@ -408,8 +382,7 @@ public:
 				throw;
 			}
 			killArr(arr, sz, cap);
-			arr = newArr;
-			newArr = NULL;
+			arr = newArr; newArr = NULL;
 			sz = newSize;
 			cap = newCapacity;
 		} else {
@@ -420,8 +393,7 @@ public:
 					alloc.construct(arr + posNum + i, *first);
 			} catch (...) {
 				killArr(arr, sz, cap);
-				arr = clone;
-				clone = NULL;
+				arr = clone; clone = NULL;
 				throw;
 			}
 			killArr(clone, sz, cap);
@@ -448,10 +420,9 @@ public:
 
 	void 					push_back( const value_type& value ) {
 		if (cap > 0) {
-			if (sz == cap) reserve( cap * 2 );
-			try {
-				alloc.construct(arr + sz, value); ++sz;
-			} catch (...) { throw; }
+			if (sz == cap)
+				reserve( cap * 2 );
+			alloc.construct(arr + sz, value); ++sz;
 		} else {
 			arr = alloc.allocate(1); ++cap;
 			try {
@@ -479,7 +450,7 @@ public:
 		} else {
 			if ( cap < count ) {
 				size_type	i = 0;
-				size_type	newCapacity = ft::upDegree2(count);
+				size_type	newCapacity = ( cap * 2 >= count ? cap * 2 : count);
 				value_type*	newArr = alloc.allocate( newCapacity );
 				try {
 					for (; i < sz; ++i)
@@ -534,6 +505,7 @@ protected:
 	value_type*				arrCopying(size_type capacity,
 									   size_type position,
 									   size_type distance) {
+		if (capacity == 0) return (NULL);
 		size_type	i = 0;
 		value_type*	arrCopy = alloc.allocate(capacity);
 		if (capacity >= sz + distance) {
@@ -576,7 +548,7 @@ protected:
 		}
 	}
 	
-	size_type				posNumber(iterator& pos) {
+	size_type				posNumber(iterator pos) {
 		size_type	count = 0;
 		iterator 	it = begin();
 		iterator 	End = end();
@@ -586,6 +558,7 @@ protected:
 		}
 		if (it == pos)
 			return (count);
+//		return (0);
 		throw std::out_of_range("ft::vector::insert:  out of range\n");
 	}
 	
@@ -608,13 +581,21 @@ protected:
 		return ( iterator(arr + pos) );
 	}
 	
+	size_type				Degree2(size_type num) {
+		size_t i = 2;
+		while (i < num)
+			i *= 2;
+		return (i);
+	}
+
+	
 }; /* class vector end */
 
 /* Non-member functions */
 
 template< class T, class Alloc >
-bool					operator==(const std::vector<T,Alloc>& lhs,
-								   const std::vector<T,Alloc>& rhs ) {
+bool					operator==(const ft::vector<T,Alloc>& lhs,
+								   const ft::vector<T,Alloc>& rhs ) {
 	return (lhs.size() == rhs.size() &&
 			ft::equal( lhs.cbegin(), lhs.cend(), rhs.cbegin() ) );
 }

@@ -159,10 +159,6 @@ private:
 	compare_type								compare;
 	Size_type									size;
 	allocator_type								allocator;
-
-	/* Friends */
-	
-	friend container_type;
 	
 	/* Member functions */
 	
@@ -170,12 +166,12 @@ public:
 	
 	/* Constructor & destructor */
 	
-	RBTree() : root(NULL) {}
+					RBTree() : root(NULL) {}
 	
-	~RBTree() {
+					~RBTree() {
 		while (size.size)
-			deleteNode(findMin());
- }
+				deleteNode(findMin());
+	}
 	
 	/* Other member functions */
 	
@@ -202,28 +198,17 @@ public:
 				child = (compare(value, node->value) ? LEFT : RIGHT);
 				node = (child == LEFT ? node->left : node->right);
 			}
-			try {
-				node = allocator.allocate(1);
-				allocator.construct(node, node_type(value, RED, parent));
-				child == LEFT ? parent->left = node : parent->right = node;
-				size.size++;
-				insertCase1(node);
-				return (node);
-			}
-			catch (std::exception &e) {
-				std::cerr << e.what() << std::endl;
-				return (NULL);
-			}
+			node = allocator.allocate(1);
+			allocator.construct(node, node_type(value, RED, parent));
+			child == LEFT ? parent->left = node : parent->right = node;
+			size.size++;
+			insertCase1(node);
+			return (node);
 		} else {
-			try {
-				root = allocator.allocate(1);
-				allocator.construct(root, node_type(value, BLACK));
-				size.size++;
-				return (root);
-			}
-			catch (std::exception &e) {
-				std::cerr << e.what() << std::endl;
-				return (NULL);
+			root = allocator.allocate(1);
+			allocator.construct(root, node_type(value, BLACK));
+			size.size++;
+			return (root);
 			}
 		}
 	}
@@ -307,14 +292,6 @@ public:
 
 private:
 	
-	void			transplant( self& clone_tree) {
-		root = clone_tree.get_root();
-		clone_tree.set_root(NULL);
-		size.size = clone_tree.get_size();
-		clone_tree.set_size(0);
-	}
-		
-		
 	void			deleteOneChild(node_pointer node) {
 		/* Condition: node has at most one non-zero child. */
 		if (node->left == NULL && node->right == NULL) {
