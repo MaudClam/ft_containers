@@ -34,11 +34,9 @@ public:
 	typedef const value_type&						const_reference;
 	typedef typename Allocator::pointer				pointer;
 	typedef typename Allocator::const_pointer		const_pointer;
-	typedef ft::iterator<
-	ft::random_access_iterator_tag,
-	value_type
-	>												iterator_type;
-	
+	typedef ft::iterator< ft::random_access_iterator_tag, value_type >
+													iterator_type;
+
 protected:
 	/* Member objects */
 	size_type				cap;
@@ -47,7 +45,6 @@ protected:
 	value_type*				arr;
 
 public:
-	
 	/* Member classes */
 	template<bool isConst>
 	class common_iterator : public iterator_type {
@@ -55,16 +52,11 @@ public:
 		pointer					ptr;
 		friend class common_iterator<!isConst>;
 	public:
-		common_iterator() : ptr(NULL) {}
-		
-		common_iterator(pointer ptr) : ptr(ptr) {}
-		
-		common_iterator(const common_iterator& other) : ptr(other.ptr) {}
-		
-		common_iterator( const common_iterator<!isConst>& other) : ptr(other.ptr) {}
-		
-		~common_iterator() {}
-		
+								common_iterator() : ptr(NULL) {}
+								common_iterator(pointer ptr) : ptr(ptr) {}
+								common_iterator(const common_iterator& other) : ptr(other.ptr) {}
+								common_iterator(const common_iterator<!isConst>& other) : ptr(other.ptr) {}
+								~common_iterator() {}
 		common_iterator&		operator=(const common_iterator& other ) {
 			this->ptr = other.ptr;
 			return ( *this );
@@ -99,10 +91,6 @@ public:
 				while (m++) --*this;
 			return (*this);
 		}
-//		friend common_iterator	operator+(const common_iterator& lhs, const difference_type& n) {
-//			common_iterator tmp = lhs;
-//			return(tmp += n);
-//		}
 		friend common_iterator	operator+(const difference_type n, const common_iterator& rhs) {
 			common_iterator tmp = rhs;
 			return(tmp += n);
@@ -115,10 +103,6 @@ public:
 		common_iterator			operator-(const difference_type n) {
 			common_iterator tmp = *this;
 			return(tmp -= n); }
-//		difference_type	operator-(common_iterator it) {
-//			difference_type n = this->ptr - it.ptr;
-//			return(n);
-//		}
 		friend difference_type	operator-(common_iterator<isConst> lhs,
 										  common_iterator<!isConst> rhs) {
 			difference_type n = lhs.ptr - rhs.ptr;
@@ -140,7 +124,6 @@ public:
 	typedef ft::reverse_iterator<const_iterator, true>	const_reverse_iterator;
 	
 	/* Member functions */
-	
 							vector()
 							:
 								cap(0),
@@ -148,7 +131,6 @@ public:
 								alloc(),
 								arr(NULL)
 							{}
-
 	explicit 				vector( const Allocator& allocator )
 							:
 								cap(0),
@@ -156,7 +138,6 @@ public:
 								alloc(allocator),
 								arr(NULL)
 							{}
-	
 	explicit 				vector(size_type count,
 								   const value_type& value = T(),
 								   const Allocator& allocator = Allocator() )
@@ -167,7 +148,6 @@ public:
 	if (count > 0)
 		insert(begin(), count, value);
 }
-	
 	template<class InputIt>	vector(InputIt first,
 								   InputIt last,
 								   const Allocator& allocator = Allocator(),
@@ -178,17 +158,20 @@ public:
 							:
 								cap(0),
 								sz(0),
-								alloc(allocator) {insert(begin(), first, last);}
-	
+								alloc(allocator) {
+		insert(begin(), first, last);
+	}
 							vector( const vector& other )
 							:
 								cap(0),
 								sz(0),
 								alloc(other.alloc),
 								arr(NULL) { *this = other; }
-	
-							~vector() { killArr(arr, sz, cap); sz = 0; cap = 0;}
-	
+							~vector() {
+		killArr(arr, sz, cap);
+		sz = 0;
+		cap = 0;
+	}
 	vector&					operator=( const vector& other ) {
 		size_type	i = 0;
 		value_type*	newArr = NULL;
@@ -209,51 +192,38 @@ public:
 		cap = other.cap;
 		return (*this);
 	}
-	
 	void 					assign( size_type count, const T& value ) {
 		clear();
 		insert(NULL, count, value);
 	}
-	
 	template<class InputIt>
 	void 					assign( InputIt first, InputIt last ) {
 		clear();
 		insert(NULL, first, last);
 	}
-	
 	allocator_type 			get_allocator() const { return(alloc); }
 	
 	/* Element access */
-	
 	reference 				at( size_type pos ) {
 		if (pos >= sz)
 			throw std::out_of_range("ft::vector::at:  out of range");
 		return arr[pos];
 	}
-	
 	const_reference 		at( size_type pos ) const {
-		if (pos >= sz) throw std::out_of_range("ft::vector::at:  out of range");
+		if (pos >= sz)
+			throw std::out_of_range("ft::vector::at:  out of range");
 		return arr[pos];
 	}
-	
 	reference 				operator[]( size_type pos ) { return (arr[pos]); }
-	
 	const_reference 		operator[]( size_type pos ) const { return (arr[pos]); }
-	
 	reference 				front() { return (arr[0]); }
-	
 	const_reference 		front() const { return (arr[0]); }
-	
 	reference 				back() { return (arr[sz - 1]); }
-	
 	const_reference 		back() const { return (arr[sz - 1]); }
-	
 	value_type* 			data() { return (arr); }
-	
 	const value_type* 		data() const { return (arr); }
 	
 	/* Iterators */
-	
 	iterator 				begin() { return iterator(arr); }
 	iterator 				begin() const { return iterator(arr); }
 	const_iterator 			cbegin() const { return const_iterator(arr); }
@@ -271,13 +241,9 @@ public:
 	const_reverse_iterator	crend() const { return const_reverse_iterator( cbegin() ); };
 	
 	/* Capacity */
-	
 	bool 					empty() const { return ( cbegin() == cend() ); }
-	
 	size_type 				size() const { return (sz); };
-	
 	size_type 				max_size() const { return (alloc.max_size()); }
-	
 	void					reserve(size_type capacity) {
 		if ( capacity <= cap && cap != 0 ) return ;
 		size_type	i = 0;
@@ -295,21 +261,17 @@ public:
 		arr = newarr;
 		cap = capacity;
 	}
-	
 	size_type 				capacity() const { return (cap); }
 	
 	/* Modifiers */
-	
 	void 					clear() {
 		while (sz)
 			alloc.destroy(arr + --sz);
 	}
-	
 	iterator 				insert(iterator pos,
 								   const value_type& value ) {
 		return ( insert(pos, 1, value) );
 	}
-
 	iterator 				insert(iterator pos,
 								   size_type count,
 								   const value_type& value ) {
@@ -353,7 +315,6 @@ public:
 		}
 		return ( iterator(arr + posNum) );
 	}
-
 	template< class InputIt >
 	iterator 				insert(iterator pos,
 								   InputIt first,
@@ -362,9 +323,9 @@ public:
 										!ft::is_integral<InputIt>::value,
 										InputIt
 										>::type* = 0 ) {
-		difference_type	dst = ft::distance(first, last);
+//		difference_type	dst = ft::distance(first, last);
 		size_type	posNum = ( cap == 0 || pos == NULL ? 0 : posNumber(pos) );
-		size_type	distance = (size_type)dst;
+		size_type	distance = (size_type)ft::distance(first, last);
 		size_type	newSize = sz + distance;
 		size_type	newCapacity = ( cap * 2 < newSize || pos == NULL ? newSize : cap * 2 );
 		value_type*	newArr = NULL;
@@ -409,7 +370,6 @@ public:
 			throw std::out_of_range("ft::vector::insert:  out of range\n");
 		return ( erase(posNum, 1) );
 	}
-	
 	iterator 				erase( iterator first, iterator last ) {
 		size_type	firstNum = posNumber(first);
 		size_type	lastNum = posNumber(last);
@@ -417,7 +377,6 @@ public:
 			throw std::out_of_range("ft::vector::insert:  out of range\n");
 		return ( erase(firstNum, lastNum - firstNum) );
 	}
-
 	void 					push_back( const value_type& value ) {
 		if (cap > 0) {
 			if (sz == cap)
@@ -433,12 +392,10 @@ public:
 			}
 		}
 	}
-	
 	void 					pop_back() {
 		if (sz > 0)
 			alloc.destroy(arr + sz - 1); --sz;
 	}
-	
 	void 					resize(size_type count,
 								   value_type value = value_type() ) {
 		if (sz == count)
@@ -485,7 +442,6 @@ public:
 			}
 		}
 	}
-	
 	void 					swap( vector& other ) {
 		value_type* arrTmp	= this->arr;
 		size_type	szTmp	= this->sz;
@@ -501,7 +457,6 @@ public:
 protected:
 	
 	/* Several internal functions */
-	
 	value_type*				arrCopying(size_type capacity,
 									   size_type position,
 									   size_type distance) {
@@ -528,7 +483,6 @@ protected:
 		}
 		return (arrCopy);
 	}
-	
 	void					shiftArr(size_type position,
 									 size_type distance) {
 		for (size_type i = sz; i > position; i--) {
@@ -536,7 +490,6 @@ protected:
 			alloc.destroy(arr + i - 1);
 		}
 	}
-	
 	void					killArr(value_type* array,
 									size_type size,
 									size_type capacity) {
@@ -547,7 +500,6 @@ protected:
 			alloc.deallocate(array, capacity);
 		}
 	}
-	
 	size_type				posNumber(iterator pos) {
 		size_type	count = 0;
 		iterator 	it = begin();
@@ -558,10 +510,8 @@ protected:
 		}
 		if (it == pos)
 			return (count);
-//		return (0);
 		throw std::out_of_range("ft::vector::insert:  out of range\n");
 	}
-	
 	iterator				erase( size_type pos, size_type distance ) {
 		value_type*	clone = arrCopying(cap, 0, 0);
 		try {
@@ -580,15 +530,7 @@ protected:
 		}
 		return ( iterator(arr + pos) );
 	}
-	
-	size_type				Degree2(size_type num) {
-		size_t i = 2;
-		while (i < num)
-			i *= 2;
-		return (i);
-	}
 
-	
 }; /* class vector end */
 
 /* Non-member functions */
@@ -604,7 +546,6 @@ bool					operator!=(const ft::vector<T,Alloc>& lhs,
 								   const ft::vector<T,Alloc>& rhs ) {
 	return (!(lhs == rhs));
 }
-
 template< class T, class Alloc >
 bool					operator<(const ft::vector<T,Alloc>& lhs,
 								  const ft::vector<T,Alloc>& rhs ) {
@@ -626,11 +567,8 @@ bool					operator>=(const ft::vector<T,Alloc>& lhs,
 	return (!(lhs < rhs));
 }
 template< class T, class Alloc >
-void 								swap(ft::vector<T,Alloc>& lhs,
-										 ft::vector<T,Alloc>& rhs ) {
-	lhs.swap(rhs);
-}
-
+void 					swap(ft::vector<T,Alloc>& lhs,
+							 ft::vector<T,Alloc>& rhs ) { lhs.swap(rhs); }
 
 } /* namespace ft end */
 
