@@ -195,17 +195,15 @@ public:
 			}
 		}
 	void			deleteNode(node_pointer node) {
-		node_pointer rm_node = NULL;
+		node_pointer node_to_swap = NULL;
 		if (node != NULL) {
 			if (node->left != NULL) {
-				rm_node = findMaxNode(node->left);
-				transplant(node, rm_node);
-//				node->value = rm_node->value;
+				node_to_swap = findMaxNode(node->left);
+				swapNodes(node, node_to_swap);
 				deleteOneChild(node);
 			} else if (node->right != NULL) {
-				rm_node = findMinNode(node->right);
-				transplant(node, rm_node);
-//				node->value = rm_node->value;
+				node_to_swap = findMinNode(node->right);
+				swapNodes(node, node_to_swap);
 				deleteOneChild(node);
 			} else
 				deleteOneChild(node);
@@ -254,7 +252,7 @@ public:
 	}
 private:
 	void			deleteOneChild(node_pointer node) {
-		/* Condition: node has at most one non-zero child. */
+		/* Condition of the function: node has at most one non-zero child. */
 		if (node->left == NULL && node->right == NULL) {
 			if (node->parent == NULL)		/* Tree is empty after deletion */
 				root = NULL;
@@ -288,46 +286,52 @@ private:
 		else
 			node->parent->right = child;
 	}
-	void			transplant(node_pointer node, node_pointer rm_node) {
+	void			swapNodes(node_pointer node, node_pointer node_to_swap) {
 		bool			color = node->color;
 		node_pointer	parent = node->parent;
 		node_pointer	left = node->left;
 		node_pointer	right = node->right;
-		
-		node->color = rm_node->color;
-		if (node == rm_node->parent)
-			node->parent = rm_node;
-		else
-			node->parent = rm_node->parent;
-		node->left = rm_node->left;
-		node->right = rm_node->right;
-		
-		rm_node->color = color;
-		rm_node->parent = parent;
-		if (rm_node == left)
-			rm_node->left = node;
-		else
-			rm_node->left = left;
-		
-		if (rm_node == right)
-			rm_node->right = node;
-		else
-			rm_node->right = right;
-		
+		/* swap colors node and node_to_swap */
+		node->color = node_to_swap->color;
+		node_to_swap->color = color;
+		/* swap parents outside node and node_to_swap */
 		if (node->parent == NULL)
-			root = node;
-		else if (rm_node == node->parent->left)
-			node->parent->left = node;
+			root = node_to_swap;
+		else if (node == node->parent->left)
+			node->parent->left = node_to_swap;
 		else
-			node->parent->right = node;
-
-		if (rm_node->parent == NULL)
-			root = node;
-		else if (node == rm_node->parent->left)
-			rm_node->parent->left = rm_node;
+			node->parent->right = node_to_swap;
+		if (node_to_swap == node_to_swap->parent->left)
+			node_to_swap->parent->left = node;
 		else
-			rm_node->parent->right = rm_node;
-
+			node_to_swap->parent->right = node;
+		/* swap childrens outside with childlessness check */
+		if (node->left != NULL) node->left->parent = node_to_swap;
+		if (node->right != NULL) node->right->parent = node_to_swap;
+		if (node_to_swap->left != NULL) node_to_swap->left->parent = node;
+		if (node_to_swap->right != NULL) node_to_swap->right->parent = node;
+		/* swap parents and childrens inside
+		** with a check if node_to_swap is a child of node */
+		if (node == node_to_swap->parent) {
+			node->parent = node_to_swap;
+			node_to_swap->parent = parent;
+			node->left = node_to_swap->left;
+			node->right = node_to_swap->right;
+			if (node_to_swap == left) {
+				node_to_swap->left = node;
+				node_to_swap->right = right;
+			} else {
+				node_to_swap->right = node;
+				node_to_swap->left = left;
+			}
+		} else {
+			node->parent = node_to_swap->parent;
+			node_to_swap->parent = parent;
+			node->left = node_to_swap->left;
+			node_to_swap->left = left;
+			node->right = node_to_swap->right;
+			node_to_swap->right = right;
+		}
 	}
 	node_pointer	grandparent(node_pointer node) {
 		if (node != NULL && node->parent != NULL)

@@ -215,15 +215,9 @@ public:
 		return (pos);
 	}
 	iterator 				erase( iterator first, iterator last ) {
-		key_type 	key = first->first;
-		key_type 	nextKey = key;
-		key_type 	lastKey = last->first;
-		while ( nextKey != lastKey ) {
-			nextKey = tree.findNextNode( findKey(key) )->value->first;
-			erase(key);
-			key = nextKey;
-		}
-		return (iterator( findKey(lastKey) ));
+		while ( first != last )
+			erase(first++);
+		return ( first );
 	}
 	size_type				erase( const key_type& key ) {
 		size_type s = size();

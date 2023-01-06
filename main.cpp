@@ -63,11 +63,47 @@ void erase_container_It(Container& c) {
 
 int	main(){
 	
+	{
+		NS::map<int, int>	A;
+		A.insert(NS::make_pair(0, 0));
+		A.insert(NS::make_pair(-2, -2));
+		A.insert(NS::make_pair(2, 2));
+		A.insert(NS::make_pair(-1, -1));
+		A.insert(NS::make_pair(1, 1));
+		A.insert(NS::make_pair(-3, -3));
+		A.insert(NS::make_pair(3, 3));
+		A.insert(NS::make_pair(-4, -4));
+		A.insert(NS::make_pair(4, 4));
+		ss << " " << A.size() << " ";
+		for (NS::map<int, int>::iterator first = A.begin(); first != A.end(); ++first)
+			ss << " " << first->second;
+		NS::map<int, int>::iterator	it1;
+		NS::map<int, int>::iterator	it2;
+		it1 = A.find(-1);
+		it2 = A.find(1);
+		A.erase(it1, it2);
+		for (NS::map<int, int>::iterator first = A.begin(); first != A.end(); ++first)
+			ss << " " << first->second;
+		ss << " " << A.size() << " ";
+		A.erase(A.find(-2));
+		A.erase(A.find(2));
+		for (NS::map<int, int>::iterator first = A.begin(); first != A.end(); ++first)
+			ss << " " << first->second;
+		ss << " " << A.size() << " ";
+		A.erase(A.find(-3));
+		A.erase(A.find(4));
+		for (NS::map<int, int>::iterator first = A.begin(); first != A.end(); ++first)
+			ss << " " << first->second;
+		ss << " " << A.size();
+		A.clear();
+		ss << " " << A.size();
+	}
+	
 	NS::map<Key,T> m;
 	fill_container(m);
 	print_container(m);
 	print_container_It(m);
-	erase_container_It(m);
+//	erase_container_It(m);
 	print_container_It(m);
 	std::cout << std::endl;
 		

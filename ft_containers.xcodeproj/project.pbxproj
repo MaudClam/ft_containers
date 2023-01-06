@@ -34,6 +34,7 @@
 		A00C59D72958849600BA3926 /* RBTree.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RBTree.hpp; sourceTree = "<group>"; };
 		A00C59E22958856500BA3926 /* map.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = map.hpp; sourceTree = SOURCE_ROOT; };
 		A00C59EC2958862E00BA3926 /* ft_containers */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ft_containers; sourceTree = BUILT_PRODUCTS_DIR; };
+		A0B963BE2968B7AD0028EA7A /* tmp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = tmp.cpp; sourceTree = "<group>"; };
 		A0DA5BED2966042D007443E1 /* iterator_map.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = iterator_map.hpp; sourceTree = "<group>"; };
 		A0EE26F92966C95B00417337 /* main_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main_test.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -64,6 +65,7 @@
 		A05E19AE295880A40007B949 = {
 			isa = PBXGroup;
 			children = (
+				A0B963BE2968B7AD0028EA7A /* tmp.cpp */,
 				A0EE26F92966C95B00417337 /* main_test.cpp */,
 				66C1D7AF29663C5C00D6FB37 /* check_tests.cpp */,
 				A00C59EC2958862E00BA3926 /* ft_containers */,
