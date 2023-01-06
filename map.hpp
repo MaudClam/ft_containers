@@ -32,18 +32,18 @@ template<
 public:
 	
 	/* Member types */
-	typedef ft::map<Key,T,Compare,Allocator>				self;
-	typedef typename ft::remove_const<Key>::type			key_type;
-	typedef T												mapped_type;
-	typedef ft::pair<const key_type, mapped_type>			value_type;
-	typedef std::ptrdiff_t									difference_type;
-	typedef Compare											key_compare;
-	typedef Allocator										allocator_type;
-	typedef value_type&										reference;
-	typedef typename Allocator::size_type					size_type;
-	typedef const value_type&								const_reference;
-	typedef typename Allocator::pointer						pointer;
-	typedef typename Allocator::const_pointer				const_pointer;
+	typedef ft::map<Key,T,Compare,Allocator>		self;
+	typedef typename ft::remove_const<Key>::type	key_type;
+	typedef T										mapped_type;
+	typedef ft::pair<const key_type, mapped_type>	value_type;
+	typedef std::ptrdiff_t							difference_type;
+	typedef Compare									key_compare;
+	typedef Allocator								allocator_type;
+	typedef value_type&								reference;
+	typedef typename Allocator::size_type			size_type;
+	typedef const value_type&						const_reference;
+	typedef typename Allocator::pointer				pointer;
+	typedef typename Allocator::const_pointer		const_pointer;
 
 	/* Member classes */
 	class value_compare {
@@ -63,16 +63,16 @@ public:
 	};
 		
 	/* Member types */
-	typedef ft::RBTree<pointer,self,value_compare>			tree_type;
-	typedef typename tree_type::node_type					node_type;
-	typedef node_type*										node_pointer;
-	typedef node_type&										node_reference;
-	typedef ft::map_iterator<node_type, value_type, false>	iterator;
-	typedef ft::map_iterator<node_type, value_type, true>	const_iterator;
-	typedef ft::pair<iterator, bool>						iterator_bool;
-	typedef ft::reverse_iterator<iterator>					reverse_iterator;
-	typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
-	
+	typedef typename ft::RBTree<pointer,value_compare>::node_type	node_type;
+	typedef node_type*												node_pointer;
+	typedef node_type&												node_reference;
+	typedef typename Allocator::template rebind<node_type>::other	node_allocator;
+	typedef ft::RBTree<pointer,value_compare, node_allocator>		tree_type;
+	typedef ft::map_iterator<node_type, value_type, false>			iterator;
+	typedef ft::map_iterator<node_type, value_type, true>			const_iterator;
+	typedef ft::pair<iterator, bool>								iterator_bool;
+	typedef ft::reverse_iterator<iterator>							reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator>					const_reverse_iterator;
 
 private:
 	/* Member objects */
@@ -158,9 +158,9 @@ public:
 	
 	/* Iterators */
 	
-	iterator 				begin() { return iterator(tree.findMin(), tree.findMax()); }
-	iterator 				begin() const { return iterator(tree.findMin(), tree.findMax()); }
-	const_iterator 			cbegin() const { return const_iterator(tree.findMin(), tree.findMax()); }
+	iterator 				begin() { return iterator(tree.findMin()); }
+	iterator 				begin() const { return iterator(tree.findMin()); }
+	const_iterator 			cbegin() const { return const_iterator(tree.findMin()); }
 
 	iterator				end() { return iterator(u_nullptr, tree.findMax()); };
 	iterator				end() const { return iterator(u_nullptr, tree.findMax()); };

@@ -271,46 +271,46 @@ typename reverse_iterator<Iterator1>::difference_type
 		return( rhs.base() - lhs.base() );
 	}
 
-/* Implementation distance std */
-
-namespace detail {
- 
-template<class It>
-typename std::iterator_traits<It>::difference_type
-		do_distance(It first, It last, std::input_iterator_tag) {
-	typename std::iterator_traits<It>::difference_type result = 0;
-	while (first != last) {
-		++first;
-		++result;
-	}
-	return result;
-}
-template<class It>
-typename ft::iterator_traits<It>::difference_type
-		do_distance(It first, It last, ft::forward_iterator_tag) {
-	typename ft::iterator_traits<It>::difference_type result = 0;
-	while (first != last) {
-		++first;
-		++result;
-	}
-	return result;
-}
-template<class It>
-typename ft::iterator_traits<It>::difference_type
-		do_distance(It first, It last, ft::random_access_iterator_tag) {
-	return last - first;
-}
- 
-} /* namespace detail end */
-
-template<class It>
-typename ft::iterator_traits<It>::difference_type
-		distance(It first, It last) {
-	return detail::do_distance(first, last,
-						typename ft::iterator_traits<It>::iterator_category());
-}
-
-/* Implementation distance std end */
+///* Implementation distance std */
+//
+//namespace detail {
+// 
+//template<class It>
+//typename std::iterator_traits<It>::difference_type
+//		do_distance(It first, It last, std::input_iterator_tag) {
+//	typename std::iterator_traits<It>::difference_type result = 0;
+//	while (first != last) {
+//		++first;
+//		++result;
+//	}
+//	return result;
+//}
+//template<class It>
+//typename ft::iterator_traits<It>::difference_type
+//		do_distance(It first, It last, ft::forward_iterator_tag) {
+//	typename ft::iterator_traits<It>::difference_type result = 0;
+//	while (first != last) {
+//		++first;
+//		++result;
+//	}
+//	return result;
+//}
+//template<class It>
+//typename ft::iterator_traits<It>::difference_type
+//		do_distance(It first, It last, ft::random_access_iterator_tag) {
+//	return last - first;
+//}
+// 
+//} /* namespace detail end */
+//
+//template<class It>
+//typename ft::iterator_traits<It>::difference_type
+//		distance(It first, It last) {
+//	return detail::do_distance(first, last,
+//						typename ft::iterator_traits<It>::iterator_category());
+//}
+//
+///* Implementation distance std end */
 
 } /* namespace ft end */
 

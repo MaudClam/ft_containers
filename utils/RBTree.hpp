@@ -56,8 +56,8 @@ template< typename T >
 struct RBNode {
 	
 	/* Member types */
-	typedef T				value_type;
-	
+	typedef T						value_type;
+
 	/* Member objects */
 	value_type				value;
 	bool					color;
@@ -104,13 +104,11 @@ struct RBNode {
 
 	RBNode& operator=(const RBNode& other)
 	{
-//		if (other != *this) {
-			this->value = other.value;
-			this->color = other.color;
-			this->parent = other.parent;
-			this->left = other.left;
-			this->right = other.right;
-//		}
+		this->value = other.value;
+		this->color = other.color;
+		this->parent = other.parent;
+		this->left = other.left;
+		this->right = other.right;
 		return (*this);
 	}
 
@@ -124,7 +122,6 @@ std::ostream& operator<<(std::ostream& o, ft::RBNode<T>& node) {
 
 template<
 	class T,
-	class Container,
 	class Compare = std::less<T>,
 	typename Allocator = std::allocator<RBNode<T> >
 > class RBTree {
@@ -134,7 +131,6 @@ public:
 	
 	typedef ft::RBTree<
 				T,
-				Container,
 				Compare,
 				Allocator
 	>											self;
@@ -142,7 +138,6 @@ public:
 	typedef T									value_type;
 	typedef value_type*							value_pointer;
 	typedef const value_type&					value_reference;
-	typedef Container							container_type;
 	typedef Compare								compare_type;
 	typedef RBNode< value_type >				node_type;
 	typedef node_type*							node_pointer;
@@ -204,26 +199,20 @@ public:
 		if (node != NULL) {
 			if (node->left != NULL) {
 				rm_node = findMaxNode(node->left);
-				node->value = rm_node->value;
-				deleteOneChild(rm_node);
+				transplant(node, rm_node);
+//				node->value = rm_node->value;
+				deleteOneChild(node);
 			} else if (node->right != NULL) {
 				rm_node = findMinNode(node->right);
-				node->value = rm_node->value;
-				deleteOneChild(rm_node);
+				transplant(node, rm_node);
+//				node->value = rm_node->value;
+				deleteOneChild(node);
 			} else
 				deleteOneChild(node);
 		}
 	}
 	void			deleteNode(const value_type& value) {
-		node_pointer node = findNode(value), rm_node = NULL;
-		if (node != NULL) {
-			if (node->left != NULL && node->right != NULL) {
-				rm_node = findMaxNode(node->left);
-				node->value = rm_node->value;
-				deleteOneChild(rm_node);
-			} else
-				deleteOneChild(node);
-		}
+		deleteNode( findNode(value) );
 	}
 	node_pointer	findNode(const value_type& value) const {
 		node_pointer node = root;
@@ -294,11 +283,51 @@ private:
 	}
 	void			replaceNode(node_pointer node, node_pointer child) {
 		child->parent = node->parent;
-		if (node == node->parent->left) {
+		if (node == node->parent->left)
 			node->parent->left = child;
-		} else {
+		else
 			node->parent->right = child;
-		}
+	}
+	void			transplant(node_pointer node, node_pointer rm_node) {
+		bool			color = node->color;
+		node_pointer	parent = node->parent;
+		node_pointer	left = node->left;
+		node_pointer	right = node->right;
+		
+		node->color = rm_node->color;
+		if (node == rm_node->parent)
+			node->parent = rm_node;
+		else
+			node->parent = rm_node->parent;
+		node->left = rm_node->left;
+		node->right = rm_node->right;
+		
+		rm_node->color = color;
+		rm_node->parent = parent;
+		if (rm_node == left)
+			rm_node->left = node;
+		else
+			rm_node->left = left;
+		
+		if (rm_node == right)
+			rm_node->right = node;
+		else
+			rm_node->right = right;
+		
+		if (node->parent == NULL)
+			root = node;
+		else if (rm_node == node->parent->left)
+			node->parent->left = node;
+		else
+			node->parent->right = node;
+
+		if (rm_node->parent == NULL)
+			root = node;
+		else if (node == rm_node->parent->left)
+			rm_node->parent->left = rm_node;
+		else
+			rm_node->parent->right = rm_node;
+
 	}
 	node_pointer	grandparent(node_pointer node) {
 		if (node != NULL && node->parent != NULL)

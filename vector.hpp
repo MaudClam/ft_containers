@@ -50,12 +50,12 @@ public:
 	class common_iterator : public iterator_type {
 	protected:
 		pointer					ptr;
-		friend class common_iterator<!isConst>;
+//		friend class common_iterator<!isConst>;
 	public:
 								common_iterator() : ptr(NULL) {}
 								common_iterator(pointer ptr) : ptr(ptr) {}
 								common_iterator(const common_iterator& other) : ptr(other.ptr) {}
-								common_iterator(const common_iterator<!isConst>& other) : ptr(other.ptr) {}
+//								common_iterator(const common_iterator<!isConst>& other) : ptr(other.ptr) {}
 								~common_iterator() {}
 		common_iterator&		operator=(const common_iterator& other ) {
 			this->ptr = other.ptr;
@@ -65,8 +65,13 @@ public:
 			this->ptr = other.ptr;
 			return ( *this );
 		}
-		bool 					operator==(common_iterator other) { return( ptr == other.ptr ); }
-		bool 					operator!=(common_iterator other) { return( !(*this == other) ); }
+
+		operator				common_iterator<isConst> () const {
+			return (common_iterator<isConst>(this->ptr));
+		}
+
+		friend bool 			operator==(common_iterator lhs, common_iterator rhs) { return( lhs.ptr == rhs.ptr ); }
+		friend bool				operator!=(common_iterator lhs, common_iterator rhs) { return( !(lhs.ptr == rhs.ptr)); }
 		typename ft::conditional<isConst, const_reference, reference>::type
 								operator*() const { return *ptr; }
 		typename ft::conditional<isConst, const_pointer, pointer>::type
@@ -103,19 +108,21 @@ public:
 		common_iterator			operator-(const difference_type n) {
 			common_iterator tmp = *this;
 			return(tmp -= n); }
-		friend difference_type	operator-(common_iterator<isConst> lhs,
-										  common_iterator<!isConst> rhs) {
-			difference_type n = lhs.ptr - rhs.ptr;
-			return(n);
-		}
+//		friend difference_type	operator-(common_iterator<isConst> lhs,
+//										  common_iterator<!isConst> rhs) {
+//			difference_type n = lhs.ptr - rhs.ptr;
+//			return(n);
+//		}
 		typename ft::conditional<isConst, const_reference, reference>::type
 								operator[](size_type n) const { return(*(*this + n)); }
-		bool					operator<(common_iterator other) { return (other.ptr - this->ptr > 0); }
-		bool					operator>(common_iterator other) { return ( other < *this ); }
-		bool					operator<=(common_iterator other) { return ( !(*this > other) ); }
-		bool					operator>=(common_iterator other) { return ( !(*this < other) ); }
+		friend bool					operator<(common_iterator lhs, common_iterator rhs) { return (rhs.ptr - lhs.ptr > 0); }
+		friend bool					operator>(common_iterator lhs, common_iterator rhs) { return ( lhs < rhs ); }
+		friend bool					operator<=(common_iterator lhs, common_iterator rhs) { return ( !(lhs > rhs) ); }
+		friend bool					operator>=(common_iterator lhs, common_iterator rhs) { return ( !(lhs < rhs) ); }
 		
 	}; /* class common_iterator end */
+	
+
 	
 	/* 	Member types */
 	typedef common_iterator<false>						iterator;
@@ -569,6 +576,14 @@ bool					operator>=(const ft::vector<T,Alloc>& lhs,
 template< class T, class Alloc >
 void 					swap(ft::vector<T,Alloc>& lhs,
 							 ft::vector<T,Alloc>& rhs ) { lhs.swap(rhs); }
+
+
+template<bool isConst>
+typename ft::vacommon_iterator<isConst>::difference_type	operator-(const common_iterator<isConst>& lhs,
+								  const common_iterator<!isConst>& rhs) {
+	difference_type n = lhs.ptr - rhs.ptr;
+	return(n);
+}
 
 } /* namespace ft end */
 
