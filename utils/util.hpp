@@ -235,6 +235,21 @@ struct is_integral : public is_integral_base<typename remove_const<T>::type> {};
 
 /* Implementation is_integral end */
 
+/* Implementation is_same */
+
+template<class T, class U>
+struct is_same {
+	static const bool	value = false;
+};
+
+template<class U>
+struct is_same<U, U> {
+	static const bool	value = true;
+};
+
+/* Implementation is_same end */
+
+
 } /* namespace ft end */
 
 #endif /* UTILS_HPP */

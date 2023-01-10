@@ -6,7 +6,7 @@
 /*   By: mclam <mclam@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 12:06:28 by mclam             #+#    #+#             */
-/*   Updated: 2022/12/04 12:06:28 by mclam            ###   ########.fr       */
+/*   Updated: 2023/01/08 15:14:15 by mclam            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,15 @@ struct RBSize {
 	typedef T		size_type;
 	size_type		size, nodes, reds, blacks;
 	bool			is_unsorted;
-	
-	RBSize()
-	:
-		size(0),
-		nodes(0),
-		reds(0),
-		blacks(0),
-		is_unsorted(false)
-	{}
-	
-	~RBSize() {}
-	
+					RBSize()
+					:
+						size(0),
+						nodes(0),
+						reds(0),
+						blacks(0),
+						is_unsorted(false)
+					{}
+					~RBSize() {}
 }; /* struct Size end */
 
 template<typename T>
@@ -56,54 +53,51 @@ template< typename T >
 struct RBNode {
 	
 	/* Member types */
-	typedef T						value_type;
+	typedef T		value_type;
+	typedef RBNode	node_type;
+	typedef RBNode*	node_pointer;
+	typedef RBNode&	node_reference;
 
 	/* Member objects */
-	value_type				value;
-	bool					color;
-	RBNode*					parent;
-	RBNode*					left;
-	RBNode*					right;
+	value_type		value;
+	bool			color;
+	node_pointer	parent;
+	node_pointer	left;
+	node_pointer	right;
 	
 	/* Member functions */
-
-	RBNode()
-	:
-		value(),
-		color(RED),
-		parent(NULL),
-		left(NULL),
-		right(NULL)
-	{}
-
-	~RBNode() {};
-
-	RBNode(
-		const value_type& value,
-		bool color = RED,
-		RBNode* parent = NULL,
-		RBNode* left = NULL,
-		RBNode* right = NULL
-		)
-	:
-		value(value),
-		color(color),
-		parent(parent),
-		left(left),
-		right(right)
-	{}
-
-	RBNode (const RBNode& node)
-	:
-		value(node.value),
-		color(node.color),
-		parent(node.parent),
-		left(node.left),
-		right(node.right)
-	{}
-
-	RBNode& operator=(const RBNode& other)
-	{
+					RBNode()
+					:
+						value(),
+						color(RED),
+						parent(NULL),
+						left(NULL),
+						right(NULL)
+					{}
+					~RBNode() {};
+					RBNode(
+						const value_type& value,
+						bool color = RED,
+						RBNode* parent = NULL,
+						RBNode* left = NULL,
+						RBNode* right = NULL
+						)
+					:
+						value(value),
+						color(color),
+						parent(parent),
+						left(left),
+						right(right)
+					{}
+					RBNode (const RBNode& node)
+					:
+						value(node.value),
+						color(node.color),
+						parent(node.parent),
+						left(node.left),
+						right(node.right)
+					{}
+	node_reference	operator=(const RBNode& other) {
 		this->value = other.value;
 		this->color = other.color;
 		this->parent = other.parent;
@@ -115,7 +109,7 @@ struct RBNode {
 }; /* struct RBNode end */
 
 template<typename T>
-std::ostream& operator<<(std::ostream& o, ft::RBNode<T>& node) {
+std::ostream&		operator<<(std::ostream& o, ft::RBNode<T>& node) {
 	o << *node.value;// << (node.color == RED ? ":R" : ":B");
 	return o;
 }
@@ -126,50 +120,40 @@ template<
 	typename Allocator = std::allocator<RBNode<T> >
 > class RBTree {
 public:
-	
 	/* Member types */
-	
-	typedef ft::RBTree<
-				T,
-				Compare,
-				Allocator
-	>											self;
-	typedef self*								self_pointer;
-	typedef T									value_type;
-	typedef value_type*							value_pointer;
-	typedef const value_type&					value_reference;
-	typedef Compare								compare_type;
-	typedef RBNode< value_type >				node_type;
-	typedef node_type*							node_pointer;
-	typedef node_type&							node_reference;
-	typedef Allocator							allocator_type;
-	typedef typename Allocator::size_type		size_type;
-	typedef RBSize<size_type>					Size_type;
+	typedef ft::RBTree<T,Compare,Allocator>	self;
+	typedef T								value_type;
+	typedef value_type*						value_pointer;
+	typedef const value_type&				value_reference;
+	typedef Compare							compare_type;
+	typedef RBNode<value_type>				node_type;
+	typedef node_type*						node_pointer;
+	typedef node_type&						node_reference;
+	typedef Allocator						allocator_type;
+	typedef typename Allocator::size_type	size_type;
+	typedef RBSize<size_type>				Size_type;
 	
 private:
-	
 	/* Member objects */
-	node_pointer								root;
-	compare_type								compare;
-	Size_type									size;
-	allocator_type								allocator;
+	node_pointer							root;
+	compare_type							compare;
+	Size_type								size;
+	allocator_type							allocator;
 	
-	/* Member functions */
 public:
-	/* Constructor & destructor */
+	/* Member functions */
 					RBTree() : root(NULL) {}
 					~RBTree() {
 		while (size.size)
 				deleteNode(findMin());
 	}
-	/* Other member functions */
 	node_pointer	get_root() const { return (root); }
 	void 			set_root(node_pointer r) { this->root = r; }
 	size_type 		get_size() const { return (this->size.size); }
 	void 			set_size(size_type s) { size.size = s; }
 	size_type 		max_size() const { return allocator.max_size(); }
 	node_pointer	insertNode(const value_type& value) {
-		if ( size.size >= max_size() )
+		if ( size.size >= allocator.max_size() )
 			throw std::bad_array_new_length();
 		if ( root != NULL ) {
 			bool child = RIGHT;
@@ -605,7 +589,6 @@ public:
 			printIteratively(root);
 		}
 	}
-	
 }; /* class RBTree end */
 
 } /* namespace ft end */

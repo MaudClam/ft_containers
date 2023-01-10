@@ -579,7 +579,7 @@ void 					swap(ft::vector<T,Alloc>& lhs,
 
 
 template<bool isConst>
-typename ft::vacommon_iterator<isConst>::difference_type	operator-(const common_iterator<isConst>& lhs,
+typename ft::common_iterator<isConst>::difference_type	operator-(const common_iterator<isConst>& lhs,
 								  const common_iterator<!isConst>& rhs) {
 	difference_type n = lhs.ptr - rhs.ptr;
 	return(n);
