@@ -61,9 +61,7 @@ struct RBNode {
 	/* Member objects */
 	value_type		value;
 	bool			color;
-	node_pointer	parent;
-	node_pointer	left;
-	node_pointer	right;
+	node_pointer	parent, left, right;
 	
 	/* Member functions */
 					RBNode()
@@ -78,10 +76,10 @@ struct RBNode {
 					RBNode(
 						const value_type& value,
 						bool color = RED,
-						RBNode* parent = NULL,
-						RBNode* left = NULL,
-						RBNode* right = NULL
-						)
+						node_pointer parent = NULL,
+						node_pointer left = NULL,
+						node_pointer right = NULL
+						   )
 					:
 						value(value),
 						color(color),

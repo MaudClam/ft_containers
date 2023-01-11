@@ -14,7 +14,7 @@
 # define VECTOR_HPP
 
 # include <iostream>
-# include "./utils/iterator.hpp"
+# include "./utils/iterators.hpp"
 # include "./utils/util.hpp"
 
 namespace ft {
@@ -50,12 +50,12 @@ public:
 	class common_iterator : public iterator_type {
 	protected:
 		pointer					ptr;
-//		friend class common_iterator<!isConst>;
+		friend class common_iterator<!isConst>;
 	public:
 								common_iterator() : ptr(NULL) {}
 								common_iterator(pointer ptr) : ptr(ptr) {}
 								common_iterator(const common_iterator& other) : ptr(other.ptr) {}
-//								common_iterator(const common_iterator<!isConst>& other) : ptr(other.ptr) {}
+								common_iterator(const common_iterator<!isConst>& other) : ptr(other.ptr) {}
 								~common_iterator() {}
 		common_iterator&		operator=(const common_iterator& other ) {
 			this->ptr = other.ptr;
@@ -108,11 +108,11 @@ public:
 		common_iterator			operator-(const difference_type n) {
 			common_iterator tmp = *this;
 			return(tmp -= n); }
-//		friend difference_type	operator-(common_iterator<isConst> lhs,
-//										  common_iterator<!isConst> rhs) {
-//			difference_type n = lhs.ptr - rhs.ptr;
-//			return(n);
-//		}
+		friend difference_type	operator-(common_iterator<isConst> lhs,
+										  common_iterator<!isConst> rhs) {
+			difference_type n = lhs.ptr - rhs.ptr;
+			return(n);
+		}
 		typename ft::conditional<isConst, const_reference, reference>::type
 								operator[](size_type n) const { return(*(*this + n)); }
 		friend bool					operator<(common_iterator lhs, common_iterator rhs) { return (rhs.ptr - lhs.ptr > 0); }
@@ -127,8 +127,8 @@ public:
 	/* 	Member types */
 	typedef common_iterator<false>						iterator;
 	typedef common_iterator<true> 						const_iterator;
-	typedef ft::reverse_iterator<iterator, false>		reverse_iterator;
-	typedef ft::reverse_iterator<const_iterator, true>	const_reverse_iterator;
+	typedef ft::reverse_iterator<iterator>				reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 	
 	/* Member functions */
 							vector()
@@ -578,12 +578,12 @@ void 					swap(ft::vector<T,Alloc>& lhs,
 							 ft::vector<T,Alloc>& rhs ) { lhs.swap(rhs); }
 
 
-template<bool isConst>
-typename ft::common_iterator<isConst>::difference_type	operator-(const common_iterator<isConst>& lhs,
-								  const common_iterator<!isConst>& rhs) {
-	difference_type n = lhs.ptr - rhs.ptr;
-	return(n);
-}
+//template<bool isConst>
+//typename ft::common_iterator<isConst>::difference_type	operator-(const common_iterator<isConst>& lhs,
+//								  const common_iterator<!isConst>& rhs) {
+//	difference_type n = lhs.ptr - rhs.ptr;
+//	return(n);
+//}
 
 } /* namespace ft end */
 

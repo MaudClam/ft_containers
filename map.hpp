@@ -48,8 +48,8 @@ public:
 	protected:
 		key_compare		comp;
 	public:
-		value_compare() {}
-		~value_compare() {}
+				value_compare() {}
+				~value_compare() {}
 		bool	operator()(pointer x, pointer y) const {
 			return ( comp(x->first, y->first) ); }
 		bool	operator()(const value_type& x, const value_type& y) const {
@@ -68,8 +68,8 @@ public:
 	typedef ft::RBTree<pointer,value_compare,node_allocator>		tree_type;
 	typedef ft::rbtree_iterator<node_type,value_type, false>		iterator;
 	typedef ft::rbtree_iterator<node_type,const value_type, true>	const_iterator;
-	typedef ft::reverse_iterator<iterator,false>					reverse_iterator;
-	typedef ft::reverse_iterator<const_iterator,true>				const_reverse_iterator;
+	typedef ft::reverse_iterator<iterator>							reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator>					const_reverse_iterator;
 	typedef ft::pair<iterator,bool>									iterator_bool;
 
 private:
@@ -295,6 +295,7 @@ public:
 	key_compare 			key_comp() const { return (k_comp); }
 	self::value_compare 	value_comp() const { return (compare); };
 
+protected:
 	/* Several internal functions */
 	void					printIteratively(void) { tree.printTreeIteratively(false); }
 	void					printRecursively(void) { tree.printTreeRecursively(); }

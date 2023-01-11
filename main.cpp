@@ -14,9 +14,19 @@
 #include <map>
 #include "map.hpp"
 
+# include <iostream>
+# include <exception>
+# include <new>
+
+# include <string>
+# include <memory>
+# include <limits>
+# include <cstddef>
+# include <sstream>
+
 #define START	1
 #define END		9
-#define NS		ft
+#define NS		std
 #define ss		std::cout
 
 typedef int		Key;
@@ -32,12 +42,14 @@ void fill_container(Container& c) {
 template< typename Container >
 void print_container(Container& c) {
 	
-	typename Container::const_iterator xIt;
+	typename Container::iterator xIt;
 	typename Container::iterator Begin( c.begin() );
 	typename Container::const_iterator End( c.end() );
 	xIt = Begin;
-	std::cout << (xIt == Begin) << std::endl;
-	std::cout << (Begin == xIt) << std::endl;
+	std::cout << std::boolalpha << "xIt == Begin | " << (xIt == Begin) << std::endl;
+	std::cout << std::boolalpha << "Begin == xIt | " << (Begin == xIt) << std::endl;
+	std::cout << std::boolalpha << "xIt != Begin | " << (xIt != Begin) << std::endl;
+	std::cout << std::boolalpha << "Begin != xIt | " << (Begin != xIt) << std::endl;
 //	xIt->second = 777;
 	std::cout << "map: ";
 	for (; xIt != End; ++xIt) {
@@ -61,7 +73,7 @@ template< typename Container >
 void erase_container_It(Container& c) {
 	typename Container::iterator It = c.begin();
 	typename Container::iterator End( c.end() );
-		c.erase(c.cbegin(), --c.cend());
+	c.erase(It, End);
 }
 
 int	main(){

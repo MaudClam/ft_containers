@@ -19,22 +19,20 @@
 namespace ft {
 
 /* Class iterator */
-
 template<
 	class Category,
 	class T,
 	bool  isConst = false,
 	class Distance = std::ptrdiff_t,
-	class Pointer = typename ft::conditional<isConst,const T,T >::type*,
-	class Reference = typename ft::conditional<isConst,const T, T >::type&
+	class Pointer = typename ft::conditional<isConst,const T,T>::type*,
+	class Reference = typename ft::conditional<isConst,const T,T>::type&
 > struct iterator {
 	/* Member types */
-	typedef typename ft::conditional<
-		isConst, const T, T >::type				value_type;
-	typedef Category							iterator_category;
-	typedef Distance							difference_type;
-	typedef Pointer								pointer;
-	typedef Reference							reference;
+	typedef typename ft::conditional<isConst, const T, T >::type	value_type;
+	typedef Category												iterator_category;
+	typedef Distance												difference_type;
+	typedef Pointer													pointer;
+	typedef Reference												reference;
 }; /* Class iterator end */
 
 /* Implementation iterator_traits */
@@ -76,11 +74,10 @@ struct iterator_traits<const T*> {
 /* Implementation iterator_traits end */
 
 /* Implementation reverse_iterator */
-template< class Iter, bool isConst = false >
+template<class Iter>
 class reverse_iterator {
-
-	/* Member objects */
 protected:
+	/* Member objects */
 	Iter current;
 public:
 	/* Member types */
@@ -100,17 +97,14 @@ public:
 		current = other.base();
 		return (*this);
 	}
-	typename ft::conditional<isConst, const reference, reference>::type
-						operator*() const {
+	reference			operator*() const {
 		Iter tmp = current;
-		return ( (typename ft::conditional<isConst, const reference, reference>::type)*(--tmp) );
+		return ( *(--tmp) );
 	}
-	typename ft::conditional<isConst, const pointer, pointer>::type
-						operator->() const {
+	pointer				operator->() const {
 		Iter tmp = current;
-		return (typename ft::conditional<isConst, const pointer, pointer>::type)&(*(--tmp));
+		return ( &(*(--tmp)) );
 	}
-	
 	reference			operator[]( difference_type n ) const {//random_access
 		return(base()[-n-1]);
 	}
@@ -201,17 +195,25 @@ typename reverse_iterator<Iterator1>::difference_type
 
 /* Class rbtree_iterator */
 template<
-typename node_type,
-typename value_type,
-bool isConst = false >
-class rbtree_iterator : public ft::iterator<ft::bidirectional_iterator_tag, value_type> {
+	typename node_type,
+	typename value_type,
+	bool isConst = false
+> class rbtree_iterator : public ft::iterator<ft::bidirectional_iterator_tag, value_type> {
+protected:
+	typedef ft::iterator<ft::bidirectional_iterator_tag, value_type>	bidirectional_iterator;
 public:
-	typedef node_type*																				node_pointer;
-	typedef rbtree_iterator<node_type, typename ft::remove_const<value_type>::type, false>			non_const_iterator;
-	typedef typename ft::iterator<ft::bidirectional_iterator_tag, value_type>::pointer				pointer;
-	typedef typename ft::iterator<ft::bidirectional_iterator_tag, value_type>::reference			reference;
-	typedef const typename ft::iterator<ft::bidirectional_iterator_tag, value_type>::value_type*	const_pointer;
-	typedef const typename ft::iterator<ft::bidirectional_iterator_tag, value_type>::value_type&	const_reference;
+	typedef node_type*													node_pointer;
+	typedef typename bidirectional_iterator::pointer					pointer;
+	typedef typename bidirectional_iterator::reference					reference;
+	typedef const typename bidirectional_iterator::value_type*			const_pointer;
+	typedef const typename bidirectional_iterator::value_type&			const_reference;
+protected:
+	typedef const value_type											const_value_type;
+	typedef typename ft::remove_const<value_type>::type 				non_const_value_type;
+	typedef typename ft::conditional<
+			isConst, non_const_value_type, const_value_type>::type		opposite_value_type;
+	typedef	rbtree_iterator<node_type, opposite_value_type, !isConst>	opposite_iterator;
+	typedef rbtree_iterator<node_type, non_const_value_type, false>		non_const_iterator;
 protected:
 	node_pointer			ptr;
 	node_pointer			max;
@@ -235,6 +237,11 @@ public:
 	rbtree_iterator&		operator=(const rbtree_iterator& other) {
 		this->ptr = other.ptr;
 		this->max = other.max;
+		return ( *this );
+	}
+	rbtree_iterator&		operator=(const opposite_iterator& other) {
+		this->ptr = other.get_ptr();
+		this->max = other.get_max();
 		return ( *this );
 	}
 	typename ft::conditional<isConst, const_reference, reference>::type
