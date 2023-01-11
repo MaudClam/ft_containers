@@ -66,8 +66,8 @@ public:
 	typedef node_type&												node_reference;
 	typedef typename Allocator::template rebind<node_type>::other	node_allocator;
 	typedef ft::RBTree<pointer,value_compare,node_allocator>		tree_type;
-	typedef ft::rbtree_iterator<node_type,value_type, false>		iterator;
-	typedef ft::rbtree_iterator<node_type,const value_type, true>	const_iterator;
+	typedef ft::rbtree_iterator<node_type,value_type,false>			iterator;
+	typedef ft::rbtree_iterator<node_type,const value_type,true>	const_iterator;
 	typedef ft::reverse_iterator<iterator>							reverse_iterator;
 	typedef ft::reverse_iterator<const_iterator>					const_reverse_iterator;
 	typedef ft::pair<iterator,bool>									iterator_bool;
@@ -101,7 +101,7 @@ public:
 							map( const map& other ) { *this = other; }
 							~map() { clear(); }
 	map&					operator=( const map& other ) {
-		if ( other.size() >= max_size() / 2 )
+		if ( other.size() >= max_size() )
 			throw std::bad_array_new_length();
 		tree_type	clone_tree;
 		try {
@@ -118,7 +118,6 @@ public:
 			return (*this);
 		}
 		catch (std::exception& e) {
-			std::cerr << e.what() << std::endl;
 			clear(clone_tree);
 		}
 		return (*this);

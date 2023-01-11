@@ -26,11 +26,11 @@
 
 #define START	1
 #define END		9
-#define NS		std
+#define NS		ft
 #define ss		std::cout
 
-typedef int		Key;
-typedef int		T;
+typedef  int		Key;
+typedef  int		T;
 
 template< typename Container >
 void fill_container(Container& c) {
@@ -43,8 +43,8 @@ template< typename Container >
 void print_container(Container& c) {
 	
 	typename Container::iterator xIt;
-	typename Container::iterator Begin( c.begin() );
-	typename Container::const_iterator End( c.end() );
+	typename Container::const_iterator Begin( c.begin() );
+	typename Container::iterator End( c.end() );
 	xIt = Begin;
 	std::cout << std::boolalpha << "xIt == Begin | " << (xIt == Begin) << std::endl;
 	std::cout << std::boolalpha << "Begin == xIt | " << (Begin == xIt) << std::endl;
@@ -83,7 +83,7 @@ int	main(){
 	print_container(m);
 	print_container_It(m);
 //	erase_container_It(m);
-	print_container_It(m);
+//	print_container_It(m);
 	std::cout << std::endl;
 		
 	std::cout << "Hellow, World!\n";

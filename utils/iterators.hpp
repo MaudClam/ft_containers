@@ -22,17 +22,16 @@ namespace ft {
 template<
 	class Category,
 	class T,
-	bool  isConst = false,
 	class Distance = std::ptrdiff_t,
-	class Pointer = typename ft::conditional<isConst,const T,T>::type*,
-	class Reference = typename ft::conditional<isConst,const T,T>::type&
+	class Pointer = T*,
+	class Reference = T&
 > struct iterator {
 	/* Member types */
-	typedef typename ft::conditional<isConst, const T, T >::type	value_type;
-	typedef Category												iterator_category;
-	typedef Distance												difference_type;
-	typedef Pointer													pointer;
-	typedef Reference												reference;
+	typedef T									value_type;
+	typedef Category							iterator_category;
+	typedef Distance							difference_type;
+	typedef Pointer								pointer;
+	typedef Reference							reference;
 }; /* Class iterator end */
 
 /* Implementation iterator_traits */
@@ -45,7 +44,6 @@ struct random_access_iterator_tag : public bidirectional_iterator_tag {};
 
 template< class Iter >
 struct iterator_traits {
-	/* Member types */
 	typedef typename Iter::difference_type		difference_type;
 	typedef	typename Iter::value_type			value_type;
 	typedef	typename Iter::pointer				pointer;
@@ -70,7 +68,6 @@ struct iterator_traits<const T*> {
 	typedef	const T&							reference;
 	typedef ft::random_access_iterator_tag		iterator_category;
 };
-
 /* Implementation iterator_traits end */
 
 /* Implementation reverse_iterator */
@@ -87,7 +84,6 @@ public:
 	typedef typename ft::iterator_traits<Iter>::difference_type		difference_type;
 	typedef typename ft::iterator_traits<Iter>::pointer				pointer;
 	typedef typename ft::iterator_traits<Iter>::reference			reference;
-
 	/* Member functions */
 						reverse_iterator() : current() {}
 	explicit			reverse_iterator( iterator_type x ) : current(x) {}
@@ -105,7 +101,7 @@ public:
 		Iter tmp = current;
 		return ( &(*(--tmp)) );
 	}
-	reference			operator[]( difference_type n ) const {//random_access
+	reference			operator[]( difference_type n ) const {
 		return(base()[-n-1]);
 	}
 	reverse_iterator& 	operator++(void) {
@@ -199,25 +195,26 @@ template<
 	typename value_type,
 	bool isConst = false
 > class rbtree_iterator : public ft::iterator<ft::bidirectional_iterator_tag, value_type> {
-protected:
-	typedef ft::iterator<ft::bidirectional_iterator_tag, value_type>	bidirectional_iterator;
 public:
+	/* Member types */
 	typedef node_type*													node_pointer;
+	typedef ft::iterator<ft::bidirectional_iterator_tag, value_type>	bidirectional_iterator;
 	typedef typename bidirectional_iterator::pointer					pointer;
 	typedef typename bidirectional_iterator::reference					reference;
-	typedef const typename bidirectional_iterator::value_type*			const_pointer;
-	typedef const typename bidirectional_iterator::value_type&			const_reference;
 protected:
-	typedef const value_type											const_value_type;
+	typedef const typename ft::remove_const<value_type>::type			const_value_type;
 	typedef typename ft::remove_const<value_type>::type 				non_const_value_type;
-	typedef typename ft::conditional<
-			isConst, non_const_value_type, const_value_type>::type		opposite_value_type;
+	typedef typename ft::conditional<isConst,
+			non_const_value_type, const_value_type>::type				opposite_value_type;
 	typedef	rbtree_iterator<node_type, opposite_value_type, !isConst>	opposite_iterator;
 	typedef rbtree_iterator<node_type, non_const_value_type, false>		non_const_iterator;
-protected:
+	typedef rbtree_iterator<node_type, const_value_type, true>			const_iterator;
+
+	/* Member objects */
 	node_pointer			ptr;
 	node_pointer			max;
 public:
+	/* Member functions */
 							rbtree_iterator() : ptr(NULL), max(NULL) {}
 							rbtree_iterator(node_pointer node, node_pointer maxNode = NULL) : ptr(node), max(maxNode) {
 								if (max == NULL) max = findMax(ptr);
@@ -239,18 +236,16 @@ public:
 		this->max = other.max;
 		return ( *this );
 	}
-	rbtree_iterator&		operator=(const opposite_iterator& other) {
+	const_iterator			operator=(const opposite_iterator& other) {
 		this->ptr = other.get_ptr();
 		this->max = other.get_max();
 		return ( *this );
 	}
-	typename ft::conditional<isConst, const_reference, reference>::type
-							operator*() const {
-								return (typename ft::conditional<isConst, const reference, reference>::type)*ptr->value;
+	reference				operator*() const {
+								return *ptr->value;
 							}
-	typename ft::conditional<isConst, const_pointer, pointer>::type
-							operator->() const {
-								return (typename ft::conditional<isConst, const pointer, pointer>::type)ptr->value;
+	pointer					operator->() const {
+								return ptr->value;
 							}
 	rbtree_iterator&		operator++(void) {
 		if (ptr != NULL) {
@@ -343,14 +338,12 @@ typename ft::iterator_traits<It>::difference_type
 	return last - first;
 }
  } /* namespace detail end */
-
 template<class It>
 typename ft::iterator_traits<It>::difference_type
 		distance(It first, It last) {
 	return detail::do_distance(first, last,
 						typename ft::iterator_traits<It>::iterator_category());
 }
-
 /* Implementation distance end */
 
 } /* namespace ft end */
