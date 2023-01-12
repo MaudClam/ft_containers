@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <map>
+#include <list>
 #include "map.hpp"
 
 # include <iostream>
@@ -32,6 +33,12 @@
 typedef  int		Key;
 typedef  int		T;
 
+template<class T1, class T2>
+std::ostream&		operator<<(std::ostream& o, ft::pair<T1,T2>& pair) {
+	o << pair.first << "=" << pair.second;
+	return o;
+}
+
 template< typename Container >
 void fill_container(Container& c) {
 	for (int i = START; i <= END; ++i) {
@@ -43,7 +50,7 @@ template< typename Container >
 void print_container(Container& c) {
 	
 	typename Container::iterator xIt;
-	typename Container::const_iterator Begin( c.begin() );
+	typename Container::iterator Begin( c.begin() );
 	typename Container::iterator End( c.end() );
 	xIt = Begin;
 	std::cout << std::boolalpha << "xIt == Begin | " << (xIt == Begin) << std::endl;
@@ -60,11 +67,11 @@ void print_container(Container& c) {
 
 template< typename Container >
 void print_container_It(Container& c) {
-	typename Container::iterator It = c.begin();
-	typename Container::const_iterator End( c.end() );
+	typename Container::reverse_iterator rIt = c.rbegin();
+	typename Container::reverse_iterator rEnd( c.rend() );
 	std::cout << "map: ";
-	for (; It != End; ++It) {
-		std::cout << It->first << "-" << It->second << " ";
+	for (; rIt != rEnd; ++rIt) {
+		std::cout << *rIt << " ";
 	}
 	std::cout << "\nsize = " << c.size() << std::endl;
 }
@@ -77,13 +84,23 @@ void erase_container_It(Container& c) {
 }
 
 int	main(){
-	
+		
 	NS::map<Key,T> m;
 	fill_container(m);
 	print_container(m);
+	m[3] = 2;
+	m[77] = 1000001;
+	try {
+		std::cout << m.at(77) << std::endl;
+		std::cout << m.at(99) << std::endl;
+	} catch (std::exception& e) {
+		std::cout << e.what() << std::endl;
+	}
 	print_container_It(m);
-//	erase_container_It(m);
-//	print_container_It(m);
+	m.erase(++++++m.begin(), ------m.end());
+	print_container_It(m);
+	erase_container_It(m);
+	print_container_It(m);
 	std::cout << std::endl;
 		
 	std::cout << "Hellow, World!\n";

@@ -119,7 +119,6 @@ template<
 > class RBTree {
 public:
 	/* Member types */
-	typedef ft::RBTree<T,Compare,Allocator>	self;
 	typedef T								value_type;
 	typedef value_type*						value_pointer;
 	typedef const value_type&				value_reference;
@@ -133,23 +132,27 @@ public:
 	
 private:
 	/* Member objects */
-	node_pointer							root;
 	compare_type							compare;
-	Size_type								size;
 	allocator_type							allocator;
-	
+	node_pointer							root;
+	Size_type								size;
+
 public:
 	/* Member functions */
-					RBTree() : root(NULL) {}
-					~RBTree() {
-		while (size.size)
-				deleteNode(findMin());
-	}
+					RBTree(const Compare& comp = Compare(),
+						   const Allocator& alloc = Allocator() )
+					:
+						compare(comp),
+						allocator(alloc),
+						root(NULL)
+					{}
+					~RBTree() { clear(); }
 	node_pointer	get_root() const { return (root); }
-	void 			set_root(node_pointer r) { this->root = r; }
-	size_type 		get_size() const { return (this->size.size); }
+	void 			set_root(node_pointer r) { root = r; }
+	size_type 		get_size() const { return (size.size); }
 	void 			set_size(size_type s) { size.size = s; }
 	size_type 		max_size() const { return allocator.max_size(); }
+	allocator_type	get_allocator() const { return (allocator); }
 	node_pointer	insertNode(const value_type& value) {
 		if ( size.size >= allocator.max_size() )
 			throw std::bad_array_new_length();
@@ -164,18 +167,20 @@ public:
 				node = (child == LEFT ? node->left : node->right);
 			}
 			node = allocator.allocate(1);
-			allocator.construct(node, node_type(value, RED, parent));
+			try { allocator.construct(node, node_type(value, RED, parent));
+			} catch (...) { allocator.deallocate(node, 1); throw ; }
 			child == LEFT ? parent->left = node : parent->right = node;
 			size.size++;
 			insertCase1(node);
 			return (node);
 		} else {
 			root = allocator.allocate(1);
-			allocator.construct(root, node_type(value, BLACK));
+			try { allocator.construct(root, node_type(value, BLACK));
+			} catch (...) { allocator.deallocate(root, 1); root = NULL; throw ; }
 			size.size++;
 			return (root);
-			}
 		}
+	}
 	void			deleteNode(node_pointer node) {
 		node_pointer node_to_swap = NULL;
 		if (node != NULL) {
@@ -193,6 +198,10 @@ public:
 	}
 	void			deleteNode(const value_type& value) {
 		deleteNode( findNode(value) );
+	}
+	void			clear(void) {
+		while (size.size)
+				deleteNode(findMin());
 	}
 	node_pointer	findNode(const value_type& value) const {
 		node_pointer node = root;

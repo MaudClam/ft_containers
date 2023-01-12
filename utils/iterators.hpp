@@ -242,10 +242,10 @@ public:
 		return ( *this );
 	}
 	reference				operator*() const {
-								return *ptr->value;
+								return (*ptr).value;
 							}
 	pointer					operator->() const {
-								return ptr->value;
+								return &(ptr->value);
 							}
 	rbtree_iterator&		operator++(void) {
 		if (ptr != NULL) {
