@@ -12,8 +12,10 @@
 
 #include <iostream>
 #include <map>
+#include <vector>
 #include <list>
 #include "map.hpp"
+#include "vector.hpp"
 
 # include <iostream>
 # include <exception>
@@ -49,7 +51,7 @@ void fill_container(Container& c) {
 template< typename Container >
 void print_container(Container& c) {
 	
-	typename Container::iterator xIt;
+	typename Container::const_iterator xIt = c.begin();
 	typename Container::iterator Begin( c.begin() );
 	typename Container::iterator End( c.end() );
 	xIt = Begin;
@@ -84,24 +86,29 @@ void erase_container_It(Container& c) {
 }
 
 int	main(){
-		
-	NS::map<Key,T> m;
-	fill_container(m);
-	print_container(m);
-	m[3] = 2;
-	m[77] = 1000001;
-	try {
-		std::cout << m.at(77) << std::endl;
-		std::cout << m.at(99) << std::endl;
-	} catch (std::exception& e) {
-		std::cout << e.what() << std::endl;
+	
+	{
+
 	}
-	print_container_It(m);
-	m.erase(++++++m.begin(), ------m.end());
-	print_container_It(m);
-	erase_container_It(m);
-	print_container_It(m);
-	std::cout << std::endl;
+	{
+		NS::map<Key,T> m;
+		fill_container(m);
+		print_container(m);
+		m[3] = 2;
+		m[77] = 1000001;
+		try {
+			std::cout << m.at(77) << std::endl;
+			std::cout << m.at(99) << std::endl;
+		} catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+		}
+		print_container_It(m);
+		m.erase(++++++m.begin(), ------m.end());
+		print_container_It(m);
+		erase_container_It(m);
+		print_container_It(m);
+		std::cout << std::endl;
+	}
 		
 	std::cout << "Hellow, World!\n";
 	return 0;

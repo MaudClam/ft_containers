@@ -309,13 +309,112 @@ public:
 	}
 }; /* class rbtree_iterator end */
 
-/* Implementation distance */
+/* class vector_iterator */
+template<
+	typename value_type,
+	bool isConst = false
+> class vector_iterator : public ft::iterator<ft::random_access_iterator_tag,value_type> {
+public:
+	/* Member types */
+	typedef ft::iterator<ft::random_access_iterator_tag,value_type>	random_access_iterator;
+	typedef typename random_access_iterator::pointer					pointer;
+	typedef typename random_access_iterator::reference					reference;
+	typedef std::size_t													size_type;
+	typedef std::ptrdiff_t												difference_type;
+protected:
+	typedef const typename ft::remove_const<value_type>::type			const_value_type;
+	typedef typename ft::remove_const<value_type>::type 				non_const_value_type;
+	typedef typename ft::conditional<isConst,
+			non_const_value_type, const_value_type>::type				opposite_value_type;
+	typedef	vector_iterator<opposite_value_type, !isConst>				opposite_iterator;
+	typedef vector_iterator<non_const_value_type, false>				non_const_iterator;
+	typedef vector_iterator<const_value_type, true>						const_iterator;
 
+	/* Member objects */
+	pointer					ptr;
+public:
+	/* Member functions */
+							vector_iterator() : ptr(NULL) {}
+							vector_iterator(pointer ptr) : ptr(ptr) {}
+							vector_iterator(const vector_iterator& other) : ptr(other.ptr) {}
+							vector_iterator(non_const_iterator other) : ptr(other.get_ptr()) {}
+							~vector_iterator() {}
+	pointer					get_ptr() const { return (this->ptr); }
+	vector_iterator&		operator=(const vector_iterator& other ) {
+		this->ptr = other.ptr;
+		return ( *this );
+	}
+	const_iterator			operator=(const opposite_iterator& other ) {
+		this->ptr = other.get_ptr();
+		return ( *this );
+	}
+	reference				operator*() const { return (*ptr); }
+	pointer					operator->() const { return (ptr); }
+	reference				operator[](size_type n) const { return( *(*this + n) ); }
+	
+	vector_iterator&		operator++(void) { ++ptr; return (*this); }
+	vector_iterator			operator++(int) {
+		vector_iterator tmp = *this;
+		++(*this);
+		return ( tmp );
+	}
+	vector_iterator&		operator--(void) { --ptr; return (*this); }
+	vector_iterator			operator--(int) {
+		vector_iterator tmp = *this;
+		--(*this);
+		return (tmp);
+	}
+	vector_iterator&		operator+=(const difference_type n) {
+		difference_type m = n;
+		if (m >= 0)
+			while (m--) ++*this;
+		else
+			while (m++) --*this;
+		return (*this);
+	}
+	vector_iterator			operator+(const difference_type n) const {
+		vector_iterator tmp = this->ptr;
+		return(tmp += n);
+	}
+	vector_iterator&		operator-=(const difference_type n) { return (*this += -n); }
+	vector_iterator			operator-(const difference_type n) const {
+		vector_iterator tmp = *this;
+		return(tmp -= n);
+	}
+	friend vector_iterator	operator+(const difference_type n, const vector_iterator& lhs) {
+		vector_iterator tmp = lhs;
+		return(tmp += n);
+	}
+	friend difference_type	operator-(const vector_iterator& lhs, const vector_iterator& rhs) {
+		difference_type n = lhs.ptr - rhs.ptr;
+		return(n);
+	}
+	friend bool 			operator==(const vector_iterator& lhs, const vector_iterator& rhs) { return( lhs.get_ptr() == rhs.get_ptr() ); }
+	friend bool 			operator!=(const vector_iterator& lhs, const vector_iterator& rhs) { return( !(lhs == rhs) ); }
+	friend bool				operator<(const vector_iterator& lhs, const vector_iterator& rhs) { return (rhs.get_ptr() - lhs.get_ptr() > 0); }
+	friend bool				operator>(const vector_iterator& lhs, const vector_iterator& rhs) { return ( rhs < lhs ); }
+	friend bool				operator<=(const vector_iterator& lhs, const vector_iterator& rhs) { return ( !(lhs > rhs) ); }
+	friend bool				operator>=(const vector_iterator& lhs, const vector_iterator& rhs) { return ( !(lhs < rhs) ); }
+	
+}; /* class vector_iterator end */
+
+/* Implementation distance */
 namespace detail {
+
 template<class It>
 typename ft::iterator_traits<It>::difference_type
 		do_distance(It first, It last, ft::input_iterator_tag) {
 	typename ft::iterator_traits<It>::difference_type result = 0;
+	while (first != last) {
+		++first;
+		++result;
+	}
+	return result;
+}
+template<class It>
+typename std::iterator_traits<It>::difference_type
+		do_distance(It first, It last, std::input_iterator_tag) {
+	typename std::iterator_traits<It>::difference_type result = 0;
 	while (first != last) {
 		++first;
 		++result;
@@ -333,11 +432,27 @@ typename ft::iterator_traits<It>::difference_type
 	return result;
 }
 template<class It>
+typename std::iterator_traits<It>::difference_type
+		do_distance(It first, It last, std::forward_iterator_tag) {
+	typename std::iterator_traits<It>::difference_type result = 0;
+	while (first != last) {
+		++first;
+		++result;
+	}
+	return result;
+}
+template<class It>
 typename ft::iterator_traits<It>::difference_type
 		do_distance(It first, It last, ft::random_access_iterator_tag) {
 	return last - first;
 }
- } /* namespace detail end */
+template<class It>
+typename std::iterator_traits<It>::difference_type
+		do_distance(It first, It last, std::random_access_iterator_tag) {
+	return last - first;
+}
+} /* namespace detail end */
+
 template<class It>
 typename ft::iterator_traits<It>::difference_type
 		distance(It first, It last) {
