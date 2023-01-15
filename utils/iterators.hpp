@@ -220,7 +220,7 @@ public:
 								if (max == NULL) max = findMax(ptr);
 							}
 							rbtree_iterator(const rbtree_iterator& other) : ptr(other.ptr), max(other.max) {}
-							rbtree_iterator(non_const_iterator other) : ptr(other.get_ptr()), max(other.get_max()) {}
+							rbtree_iterator(non_const_iterator& other) : ptr(other.get_ptr()), max(other.get_max()) {}
 							~rbtree_iterator() {}
 	node_pointer			get_ptr() const { return (this->ptr); }
 	node_pointer			get_max() const { return (this->max); }
@@ -337,7 +337,7 @@ public:
 							vector_iterator() : ptr(NULL) {}
 							vector_iterator(pointer ptr) : ptr(ptr) {}
 							vector_iterator(const vector_iterator& other) : ptr(other.ptr) {}
-							vector_iterator(non_const_iterator other) : ptr(other.get_ptr()) {}
+							vector_iterator(non_const_iterator& other) : ptr(other.get_ptr()) {}
 							~vector_iterator() {}
 	pointer					get_ptr() const { return (this->ptr); }
 	vector_iterator&		operator=(const vector_iterator& other ) {

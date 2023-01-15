@@ -20,6 +20,7 @@
 # define INDENT	":   "
 
 # include <iostream>
+# include "util.hpp"
 
 namespace ft {
 
@@ -155,7 +156,7 @@ public:
 	allocator_type	get_allocator() const { return (allocator); }
 	node_pointer	insertNode(const value_type& value) {
 		if ( size.size >= allocator.max_size() )
-			throw std::bad_array_new_length();
+			throw ft::bad_array_new_length();
 		if ( root != NULL ) {
 			bool child = RIGHT;
 			node_pointer node = root, parent = NULL;

@@ -255,6 +255,15 @@ bool			operator>=( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs ) {
 }
 /* Implementation std::pair end */
 
+class bad_array_new_length : public std::exception
+{
+public:
+	bad_array_new_length() {}
+	const char	*what() const throw() {
+		return "bad array new length";
+	};
+};
+
 } /* namespace ft end */
 
 #endif /* UTILS_HPP */

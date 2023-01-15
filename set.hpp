@@ -89,7 +89,7 @@ public:
 							~set() { clear(); }
 	set&					operator=( const set& other ) {
 		if ( other.size() >= tree.max_size() )
-			throw std::bad_array_new_length();
+			throw ft::bad_array_new_length();
 		tree_type	clone_tree = tree_type(compare, allocator);
 		try {
 			node_pointer node = other.tree.findMin();

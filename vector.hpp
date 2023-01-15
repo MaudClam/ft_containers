@@ -312,8 +312,10 @@ public:
 		}
 	}
 	void 					pop_back() {
-		if (sz > 0)
-			alloc.destroy(arr + sz - 1); --sz;
+		if (sz > 0) {
+			alloc.destroy(arr + sz - 1);
+			--sz;
+		}
 	}
 	void 					resize(size_type count,
 								   value_type value = value_type() ) {
