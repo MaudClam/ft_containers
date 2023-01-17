@@ -6,7 +6,7 @@
 /*   By: mclam <mclam@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 20:18:18 by mclam             #+#    #+#             */
-/*   Updated: 2023/01/08 18:21:50 by mclam            ###   ########.fr       */
+/*   Updated: 2023/01/17 11:12:56 by mclam            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,13 +202,8 @@ public:
 	typedef typename bidirectional_iterator::pointer					pointer;
 	typedef typename bidirectional_iterator::reference					reference;
 protected:
-	typedef const typename ft::remove_const<value_type>::type			const_value_type;
 	typedef typename ft::remove_const<value_type>::type 				non_const_value_type;
-	typedef typename ft::conditional<isConst,
-			non_const_value_type, const_value_type>::type				opposite_value_type;
-	typedef	rbtree_iterator<node_type, opposite_value_type, !isConst>	opposite_iterator;
-	typedef rbtree_iterator<node_type, non_const_value_type, false>		non_const_iterator;
-	typedef rbtree_iterator<node_type, const_value_type, true>			const_iterator;
+	typedef rbtree_iterator<node_type, non_const_value_type>			non_const_iterator;
 
 	/* Member objects */
 	node_pointer			ptr;
@@ -219,8 +214,7 @@ public:
 							rbtree_iterator(node_pointer node, node_pointer maxNode = NULL) : ptr(node), max(maxNode) {
 								if (max == NULL) max = findMax(ptr);
 							}
-							rbtree_iterator(const rbtree_iterator& other) : ptr(other.ptr), max(other.max) {}
-							rbtree_iterator(non_const_iterator& other) : ptr(other.get_ptr()), max(other.get_max()) {}
+							rbtree_iterator(const non_const_iterator& other) : ptr(other.get_ptr()), max(other.get_max()) {}
 							~rbtree_iterator() {}
 	node_pointer			get_ptr() const { return (this->ptr); }
 	node_pointer			get_max() const { return (this->max); }
@@ -231,12 +225,7 @@ public:
 			node = node->right;
 		return (node);
 	}
-	rbtree_iterator&		operator=(const rbtree_iterator& other) {
-		this->ptr = other.ptr;
-		this->max = other.max;
-		return ( *this );
-	}
-	const_iterator			operator=(const opposite_iterator& other) {
+	rbtree_iterator			operator=(const non_const_iterator& other) {
 		this->ptr = other.get_ptr();
 		this->max = other.get_max();
 		return ( *this );
@@ -316,19 +305,14 @@ template<
 > class vector_iterator : public ft::iterator<ft::random_access_iterator_tag,value_type> {
 public:
 	/* Member types */
-	typedef ft::iterator<ft::random_access_iterator_tag,value_type>	random_access_iterator;
+	typedef ft::iterator<ft::random_access_iterator_tag,value_type>		random_access_iterator;
 	typedef typename random_access_iterator::pointer					pointer;
 	typedef typename random_access_iterator::reference					reference;
 	typedef std::size_t													size_type;
 	typedef std::ptrdiff_t												difference_type;
 protected:
-	typedef const typename ft::remove_const<value_type>::type			const_value_type;
 	typedef typename ft::remove_const<value_type>::type 				non_const_value_type;
-	typedef typename ft::conditional<isConst,
-			non_const_value_type, const_value_type>::type				opposite_value_type;
-	typedef	vector_iterator<opposite_value_type, !isConst>				opposite_iterator;
-	typedef vector_iterator<non_const_value_type, false>				non_const_iterator;
-	typedef vector_iterator<const_value_type, true>						const_iterator;
+	typedef vector_iterator<non_const_value_type>						non_const_iterator;
 
 	/* Member objects */
 	pointer					ptr;
@@ -336,22 +320,16 @@ public:
 	/* Member functions */
 							vector_iterator() : ptr(NULL) {}
 							vector_iterator(pointer ptr) : ptr(ptr) {}
-							vector_iterator(const vector_iterator& other) : ptr(other.ptr) {}
-							vector_iterator(non_const_iterator& other) : ptr(other.get_ptr()) {}
+							vector_iterator(const non_const_iterator& other) : ptr(other.get_ptr()) {}
 							~vector_iterator() {}
 	pointer					get_ptr() const { return (this->ptr); }
-	vector_iterator&		operator=(const vector_iterator& other ) {
-		this->ptr = other.ptr;
-		return ( *this );
-	}
-	const_iterator			operator=(const opposite_iterator& other ) {
+	vector_iterator			operator=(const non_const_iterator& other ) {
 		this->ptr = other.get_ptr();
 		return ( *this );
 	}
 	reference				operator*() const { return (*ptr); }
 	pointer					operator->() const { return (ptr); }
 	reference				operator[](size_type n) const { return( *(*this + n) ); }
-	
 	vector_iterator&		operator++(void) { ++ptr; return (*this); }
 	vector_iterator			operator++(int) {
 		vector_iterator tmp = *this;

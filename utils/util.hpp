@@ -6,7 +6,7 @@
 /*   By: mclam <mclam@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 19:45:58 by mclam             #+#    #+#             */
-/*   Updated: 2023/01/14 17:11:31 by mclam            ###   ########.fr       */
+/*   Updated: 2023/01/17 11:13:21 by mclam            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,79 +116,35 @@ bool equal( InputIt1 first1,
 /* Implementation equal end */
 
 /* Implementation is_integral */
-template <typename>
-struct is_integral_base {
-
-	static const bool	value = false;
+template <typename T, T v>
+struct	integral_constant {
+	typedef T						value_type;
+	typedef integral_constant<T, v>	type;
+	static const T					value = v;
+	operator T() {return v;}
 };
-template <>
-struct is_integral_base<bool> {
-
-	static const bool	value = true;
-};
-template <>
-struct is_integral_base<char> {
-
-	static const bool	value = true;
-};
-template <>
-struct is_integral_base<wchar_t> {
-
-	static const bool	value = true;
-};
-template <>
-struct is_integral_base<signed char> {
-
-	static const bool	value = true;
-};
-template <>
-struct is_integral_base<short int> {
-
-	static const bool	value = true;
-};
-template <>
-struct is_integral_base<int> {
-
-	static const bool	value = true;
-};
-template <>
-struct is_integral_base<long int> {
-
-	static const bool	value = true;
-};
-template <>
-struct is_integral_base<long long int> {
-
-	static const bool	value = true;
-};
-template <>
-struct is_integral_base<unsigned char> {
-
-	static const bool	value = true;
-};
-template <>
-struct is_integral_base<unsigned short int> {
-
-	static const bool	value = true;
-};
-template <>
-struct is_integral_base<unsigned int> {
-
-	static const bool	value = true;
-};
-template <>
-struct is_integral_base<unsigned long int> {
-
-	static const bool	value = true;
-};
-template <>
-struct is_integral_base<unsigned long long int> {
-
-	static const bool	value = true;
-};
-template < typename T>
-struct is_integral : public is_integral_base<typename remove_const<T>::type> {};
+typedef ft::integral_constant<bool, true>	true_type;
+typedef ft::integral_constant<bool, false>	false_type;
+template <typename T> struct	is_integral : ft::integral_constant<bool, false> {};
+template <> struct	is_integral<bool> : ft::integral_constant<bool, true> {};
+template <> struct	is_integral<char> : ft::integral_constant<char, true> {};
+template <> struct	is_integral<signed char> : ft::integral_constant<signed char, true> {};
+template <> struct	is_integral<unsigned char> : ft::integral_constant<unsigned char, true> {};
+template <> struct	is_integral<short> : ft::integral_constant<short, true> {};
+template <> struct	is_integral<unsigned short> : ft::integral_constant<unsigned short, true> {};
+template <> struct	is_integral<int> : ft::integral_constant<int, true> {};
+template <> struct	is_integral<unsigned int> : ft::integral_constant<unsigned int, true> {};
+template <> struct	is_integral<long> : ft::integral_constant<long, true> {};
+template <> struct	is_integral<unsigned long> : ft::integral_constant<unsigned long, true> {};
+template <> struct	is_integral<long long> : ft::integral_constant<long long, true> {};
+template <> struct	is_integral<unsigned long long> : ft::integral_constant<unsigned long long, true> {};
+template <> struct	is_integral<wchar_t> : ft::integral_constant<wchar_t, true> {};
 /* Implementation is_integral end */
+
+/* Implementation is_const */
+template<class T> struct is_const          : ft::false_type {};
+template<class T> struct is_const<const T> : ft::true_type {};
+/* Implementation is_const end */
 
 /* Implementation is_same */
 template<class T, class U>
