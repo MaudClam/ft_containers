@@ -35,4 +35,4 @@ Tips for this project:
 
 - I started the project by writing a red-black tree using the algorithm: en.wikipedia.org/wiki/Red-black_tree. First, I wrote the code in C, debugged and studied the operation of the algorithm. Then I rewrote it in C++ as a separate RBTree class. After that, I started writing map and set and iterators for them.
 
-- If you write a map in red-black tree, it will take 15-30 minutes to redeploy and test the code under set, and the bonus in this project will cost you very little. Moreover, the set reference is designed for this.
+- If you write a map in Red-Black Tree, it will take 15-30 minutes to rewrite and test the code for set, and the time spent on the bonus in this project will be the most minimal. Moreover, the set reference is designed for this.
