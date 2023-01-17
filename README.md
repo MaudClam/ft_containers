@@ -1,6 +1,6 @@
 # ft_containers
 
-Curriculum reimplementation of some STL containers (vector, map, stack, set and their iterators, const_iterators, reverse_iterators) [C++98]
+Curriculum (42.fr) reimplementation of some STL containers (vector, map, stack, set and their iterators, const_iterators, reverse_iterators) [C++98]
 
 A container is a holder object that stores a collection of other objects (its elements).
 They are implemented as class templates, which allows a great flexibility in the types supported as elements.
@@ -16,6 +16,7 @@ Implemented the following containers:
 - set - Red-black tree of sorted unique keys.
 
 Used tests:
+
 https://github.com/nenieiri-42Yerevan/42_Ft_containers_Crash_test
 https://github.com/mli42/containers_test
 
