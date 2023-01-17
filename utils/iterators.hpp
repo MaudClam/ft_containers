@@ -359,14 +359,6 @@ public:
 		vector_iterator tmp = *this;
 		return(tmp -= n);
 	}
-	friend vector_iterator	operator+(const difference_type n, const vector_iterator& lhs) {
-		vector_iterator tmp = lhs;
-		return(tmp += n);
-	}
-	friend difference_type	operator-(const vector_iterator& lhs, const vector_iterator& rhs) {
-		difference_type n = lhs.ptr - rhs.ptr;
-		return(n);
-	}
 	friend bool 			operator==(const vector_iterator& lhs, const vector_iterator& rhs) { return( lhs.get_ptr() == rhs.get_ptr() ); }
 	friend bool 			operator!=(const vector_iterator& lhs, const vector_iterator& rhs) { return( !(lhs == rhs) ); }
 	friend bool				operator<(const vector_iterator& lhs, const vector_iterator& rhs) { return (rhs.get_ptr() - lhs.get_ptr() > 0); }
@@ -376,9 +368,38 @@ public:
 	
 }; /* class vector_iterator end */
 
+/* Non-member functions for vector_iterator */
+template<typename value_type, bool isConst>
+typename ft::vector_iterator<value_type,isConst>
+		operator+(const typename ft::vector_iterator<value_type,isConst>::difference_type n,
+				  const typename ft::vector_iterator<value_type,isConst>& rhs) {
+	typename ft::vector_iterator<value_type,isConst> tmp(rhs);
+	return(tmp += n);
+}
+template<typename value_type, bool isConst>
+typename ft::vector_iterator<value_type>::difference_type
+		operator-(const typename ft::vector_iterator<value_type,isConst>& lhs,
+				  const typename ft::vector_iterator<value_type,isConst>& rhs) {
+			typename ft::vector_iterator<value_type,isConst>::difference_type n = lhs.get_ptr() - rhs.get_ptr();
+	return(n);
+}
+template<typename value_type, bool isConst>
+typename ft::vector_iterator<value_type>::difference_type
+		operator-(const typename ft::vector_iterator<value_type,isConst>& lhs,
+				  const typename ft::vector_iterator<typename ft::remove_const<value_type>::type,!isConst>& rhs) {
+			typename ft::vector_iterator<value_type,isConst>::difference_type n = lhs.get_ptr() - rhs.get_ptr();
+	return(n);
+}
+template<typename value_type, bool isConst>
+typename ft::vector_iterator<value_type>::difference_type
+		operator-(const typename ft::vector_iterator<typename ft::remove_const<value_type>::type,!isConst>& lhs,
+				  const typename ft::vector_iterator<value_type,isConst>& rhs) {
+			typename ft::vector_iterator<value_type,isConst>::difference_type n = lhs.get_ptr() - rhs.get_ptr();
+	return(n);
+}
+
 /* Implementation distance */
 namespace detail {
-
 template<class It>
 typename ft::iterator_traits<It>::difference_type
 		do_distance(It first, It last, ft::input_iterator_tag) {
@@ -430,7 +451,6 @@ typename std::iterator_traits<It>::difference_type
 	return last - first;
 }
 } /* namespace detail end */
-
 template<class It>
 typename ft::iterator_traits<It>::difference_type
 		distance(It first, It last) {
