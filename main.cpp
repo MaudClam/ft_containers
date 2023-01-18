@@ -15,7 +15,11 @@
 #include <deque>
 #include <new>
 
-#if 0 //CREATE A REAL STL EXAMPLE
+#define TRUE	1
+#define FALSE	0
+#define STD		TRUE
+
+#if STD //CREATE A REAL STL EXAMPLE
 	#include <map>
 	#include <stack>
 	#include <vector>

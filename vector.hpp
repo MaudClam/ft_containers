@@ -98,22 +98,39 @@ public:
 	}
 	vector&					operator=( const vector& other ) {
 		size_type	i = 0;
-		value_type*	newArr = NULL;
-		if (other.cap != 0)
-			newArr = alloc.allocate(other.cap);
-		try {
-			for (; i < other.sz; ++i)
-				alloc.construct(newArr + i, other.arr[i]);
-		} catch (...) {
-			for (size_type j = 0; j < i; ++j)
-				alloc.destroy(newArr + j);
-			alloc.deallocate(newArr, other.cap);
-			throw ;
+		if (cap < other.sz) {
+			value_type*	newArr = NULL;
+			if (other.cap != 0)
+				newArr = alloc.allocate(other.cap);
+			try {
+				for (; i < other.sz; ++i)
+					alloc.construct(newArr + i, other.arr[i]);
+			} catch (...) {
+				for (size_type j = 0; j < i; ++j)
+					alloc.destroy(newArr + j);
+				alloc.deallocate(newArr, other.cap);
+				throw ;
+			}
+			killArr(arr, sz, cap);
+			arr = newArr; newArr = NULL;
+			sz = other.sz;
+			cap = other.cap;
+		} else {
+			value_type*	clone = arrCopying(cap, 0, 0);
+			clear();
+			try {
+				for (; i < other.sz; ++i)
+					alloc.construct(arr + i, other.arr[i]);
+			} catch (...) {
+				for (size_type j = 0; j < i; ++j)
+					alloc.destroy(arr + j);
+				killArr(arr, sz, cap);
+				arr = clone; clone = NULL;
+				throw ;
+			}
+			killArr(clone, sz, cap);
+			sz = other.sz;
 		}
-		killArr(arr, sz, cap);
-		arr = newArr;
-		sz = other.sz;
-		cap = other.cap;
 		return (*this);
 	}
 	void 					assign( size_type count, const T& value ) {
