@@ -157,7 +157,7 @@ int	main(void) {
 		v2.pop_back();;
 		print("v2.pop_back();");
 		print("v2: ", NOENDL); print(v2);
-		
+
 		v2[6] = 90009;
 		print("v2[6] = 90009;");
 		print("v2: ", NOENDL); print(v2);
@@ -165,17 +165,17 @@ int	main(void) {
 		v2.at(6) = 10001;
 		print("v2.at(6) = 10001;");
 		print("v2: ", NOENDL); print(v2);
-		
+
 		print("try { v2.at(15) = 10001; } catch (std::out_of_range const& e) {");
 		print("\tstd::cerr << e.what() << std::endl; }");
 		try { v2.at(15) = 10001; } catch (std::out_of_range const& e) {
 			std::cerr	<< (DBG ? "" : OUT_STYLE) << e.what()
 						<< (DBG ? "\n" : NORM_STYLE"\n") << std::endl; }
-		
+
 		v2.reserve(100);
 		print("v2.reserve(100);");
 		print("v2: ", NOENDL); print(v2);
-		
+
 		print("try { v2.reserve(v2.max_size() + 1); } catch (std::exception& e) {");
 		print("\tstd::cerr << e.what() << std::endl; }");
 		try { v2.reserve((v2.max_size() + 1)); } catch (std::exception& e) {
@@ -189,7 +189,7 @@ int	main(void) {
 		v2.resize(10);
 		print("v2.resize(10);");
 		print("v2: ", NOENDL); print(v2);
-		
+
 		v2.clear();
 		print("v2.clear();");
 		print("v2: ", NOENDL); print(v2);
@@ -197,7 +197,7 @@ int	main(void) {
 	}
 	{
 		print("==== namespace std, STL lib\n");
-		
+
 		std::vector<T1> v;
 		print("std::vector<T1> v;");
 		v.assign(9, '*');
@@ -220,7 +220,7 @@ int	main(void) {
 		v2.pop_back();;
 		print("v2.pop_back();");
 		print("v2: ", NOENDL); print(v2);
-		
+
 		v2[6] = 90009;
 		print("v2[6] = 90009;");
 		print("v2: ", NOENDL); print(v2);
@@ -228,17 +228,17 @@ int	main(void) {
 		v2.at(6) = 10001;
 		print("v2.at(6) = 10001;");
 		print("v2: ", NOENDL); print(v2);
-		
+
 		print("try { v2.at(15) = 10001; } catch (std::out_of_range const& e) {");
 		print("\tstd::cerr << e.what() << std::endl; }");
 		try { v2.at(15) = 10001; } catch (std::out_of_range const& e) {
 			std::cerr	<< (DBG ? "" : OUT_STYLE) << e.what()
 						<< (DBG ? "\n" : NORM_STYLE"\n") << std::endl; }
-		
+
 		v2.reserve(100);
 		print("v2.reserve(100);");
 		print("v2: ", NOENDL); print(v2);
-		
+
 		print("try { v2.reserve(v2.max_size() + 1); } catch (std::exception& e) {");
 		print("\tstd::cerr << e.what() << std::endl; }");
 		try { v2.reserve((v2.max_size() + 1)); } catch (std::exception& e) {
@@ -252,11 +252,193 @@ int	main(void) {
 		v2.resize(10);
 		print("v2.resize(10);");
 		print("v2: ", NOENDL); print(v2);
-		
+
 		v2.clear();
 		print("v2.clear();");
 		print("v2: ", NOENDL); print(v2);
+	}
+	{
+		print("\n==== VECTOR TESTING FUNCTIONS WHITH ITERATORS ====\n");
 
+		ft::vector<T1> v(9, '*');
+		print("ft::vector<T1> v(9, '*');");
+		print("v: ", NOENDL); print(v, NOENDL);
+		ft::vector<T1>::iterator it(++++++v.begin());
+		print("ft::iterator<T1>::iterator it(++++++v.begin());");
+		v.insert(it, '#');
+		print("v.insert(it, '#');");
+		print("v: ", NOENDL); print(v);
+
+		ft::vector<T1> v1(4, '#');
+		print("ft::vector<T1> v1(4, '#');");
+		print("v1: ", NOENDL); print(v1, NOENDL);
+		v.insert(++++++++++v.begin(), v1.begin(), v1.end());
+		print("v.insert(++++++++++v.begin(), v1.begin(), v1.end());");
+		print("v: ", NOENDL); print(v);
+
+		v.erase(++++++v.begin());
+		print("v.erase(++++++v.begin());");
+		print("v: ", NOENDL); print(v);
+
+		v.erase(++++++++v.begin(), ----------v.end());
+		print("++++++++v.erase(v.begin(), ----------v.end());");
+		print("v: ", NOENDL); print(v);
+
+		print("v: ", NOENDL); print(v, NOENDL);
+		print("v1: ", NOENDL); print(v1, NOENDL);
+		ft::vector<T1>::iterator iT = v.begin();
+		print("ft::vector<T1>::iterator iT = v.begin(); ");
+		print("*iT = ",NOENDL); print(*iT);
+		v.swap(v1);
+		print("v.swap(v1);");
+		print("*iT = ",NOENDL); print(*iT);
+		print("v: ", NOENDL); print(v, NOENDL);
+		print("v1: ", NOENDL); print(v1);
+
+	}
+	{
+		print("==== namespace std, STL lib\n");
+
+		std::vector<T1> v(9, '*');
+		print("std::vector<T1> v(9, '*');");
+		print("v: ", NOENDL); print(v, NOENDL);
+		std::vector<T1>::iterator it(++++++v.begin());
+		print("std::iterator<T1>::iterator it(++++++v.begin());");
+		v.insert(it, '#');
+		print("v.insert(it, '#');");
+		print("v: ", NOENDL); print(v);
+
+		std::vector<T1> v1(4, '#');
+		print("std::vector<T1> v1(4, '#');");
+		print("v1: ", NOENDL); print(v1, NOENDL);
+		v.insert(++++++++++v.begin(), v1.begin(), v1.end());
+		print("v.insert(++++++++++v.begin(), v1.begin(), v1.end());");
+		print("v: ", NOENDL); print(v);
+
+		v.erase(++++++v.begin());
+		print("v.erase(++++++v.begin());");
+		print("v: ", NOENDL); print(v);
+
+		v.erase(++++++++v.begin(), ----------v.end());
+		print("++++++++v.erase(v.begin(), ----------v.end());");
+		print("v: ", NOENDL); print(v);
+
+		print("v: ", NOENDL); print(v, NOENDL);
+		print("v1: ", NOENDL); print(v1, NOENDL);
+		std::vector<T1>::iterator iT = v.begin();
+		print("std::vector<T1>::iterator iT = v.begin(); ");
+		print("*iT = ",NOENDL); print(*iT);
+		v.swap(v1);
+		print("v.swap(v1);");
+		print("*iT = ",NOENDL); print(*iT);
+		print("v: ", NOENDL); print(v, NOENDL);
+		print("v1: ", NOENDL); print(v1, NOENDL);
+	}
+	{
+		print("\n==== VECTOR TESTING ITERATOR COMPARISONS ====\n");
+		
+		ft::vector<T> v;
+		print("ft::vector<T> v;");
+		for(int i = 0; i < 9; ++i) v.push_back(i);
+		print("for(int i = 0; i < 9; ++i) v.push_back(i);");
+		print("v: ",NOENDL); print(v);
+		
+		ft::vector<T>::iterator Begin = v.begin();
+		print("ft::vector<T>::iterator Begin = v.begin();");
+		ft::vector<T>::const_iterator cEnd = v.end();
+		print("ft::vector<T>::const_iterator cEnd = v.end();");
+		ft::vector<T>::reverse_iterator rBegin = v.rbegin();
+		print("ft::vector<T>::reverse_iterator rBegin = v.rbegin();");
+		ft::vector<T>::const_reverse_iterator crEnd = v.rend();
+		print("ft::vector<T>::const_reverse_iterator crEnd = v.rend();");
+		print("");
+		
+		bool b;
+		print("Begin == cEnd | ",NOENDL);
+		print(b = Begin == cEnd);;
+		print("cEnd != Begin | ",NOENDL);
+		print(b = cEnd != Begin);;
+		print("");
+		print("rBegin == crEnd | ",NOENDL);
+		print(b = rBegin == crEnd);;
+		print("crEnd != rBegin | ",NOENDL);
+		print(b = crEnd != rBegin);;
+		print("");
+		
+		print("Begin < cEnd | ",NOENDL);
+		print(b = Begin < cEnd);;
+		print("cEnd > Begin | ",NOENDL);
+		print(b = cEnd > Begin);;
+		print("");
+		print("rBegin < crEnd | ",NOENDL);
+		print(b = rBegin < crEnd);;
+		print("crEnd > rBegin | ",NOENDL);
+		print(b = crEnd > rBegin);;
+		print("");
+
+		print("Begin <= cEnd | ",NOENDL);
+		print(b = Begin <= cEnd);;
+		print("cEnd >= Begin | ",NOENDL);
+		print(b = cEnd >= Begin);;
+		print("");
+		print("rBegin <= crEnd | ",NOENDL);
+		print(b = rBegin <= crEnd);;
+		print("crEnd >= rBegin | ",NOENDL);
+		print(b = crEnd >= rBegin);;
+		print("");
+	}
+	{
+		print("==== namespace std, STL lib\n");
+
+		std::vector<T> v;
+		print("std::vector<T> v;");
+		for(int i = 0; i < 9; ++i) v.push_back(i);
+		print("for(int i = 0; i < 9; ++i) v.push_back(i);");
+		print("v: ",NOENDL); print(v);
+		
+		std::vector<T>::iterator Begin = v.begin();
+		print("std::vector<T>::iterator Begin = v.begin();");
+		std::vector<T>::const_iterator cEnd = v.end();
+		print("std::vector<T>::const_iterator cEnd = v.end();");
+		std::vector<T>::reverse_iterator rBegin = v.rbegin();
+		print("std::vector<T>::reverse_iterator rBegin = v.rbegin();");
+		std::vector<T>::const_reverse_iterator crEnd = v.rend();
+		print("std::vector<T>::const_reverse_iterator crEnd = v.rend();");
+		print("");
+		
+		bool b;
+		print("Begin == cEnd | ",NOENDL);
+		print(b = Begin == cEnd);;
+		print("cEnd != Begin | ",NOENDL);
+		print(b = cEnd != Begin);;
+		print("");
+		print("rBegin == crEnd | ",NOENDL);
+		print(b = rBegin == crEnd);;
+		print("crEnd != rBegin | ",NOENDL);
+		print(b = crEnd != rBegin);;
+		print("");
+		
+		print("Begin < cEnd | ",NOENDL);
+		print(b = Begin < cEnd);;
+		print("cEnd > Begin | ",NOENDL);
+		print(b = cEnd > Begin);;
+		print("");
+		print("rBegin < crEnd | ",NOENDL);
+		print(b = rBegin < crEnd);;
+		print("crEnd > rBegin | ",NOENDL);
+		print(b = crEnd > rBegin);;
+		print("");
+
+		print("Begin <= cEnd | ",NOENDL);
+		print(b = Begin <= cEnd);;
+		print("cEnd >= Begin | ",NOENDL);
+		print(b = cEnd >= Begin);;
+		print("");
+		print("rBegin <= crEnd | ",NOENDL);
+		print(b = rBegin <= crEnd);;
+		print("crEnd >= rBegin | ",NOENDL);
+		print(b = crEnd >= rBegin);;
+		print("");
 	}
 	return 0;
 }
