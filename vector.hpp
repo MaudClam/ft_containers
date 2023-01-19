@@ -314,8 +314,8 @@ public:
 	
 	iterator 				erase( iterator pos ) {
 		size_type	posNum = posNumber(pos);
-		if (pos >= sz) {
-			std::ostringstream sPos; sPos << pos;
+		if (posNum == sz) {
+			std::ostringstream sPos; sPos << posNum;
 			std::ostringstream sSize; sSize << size();
 			throw std::out_of_range("vector::_M_range_check: __n (which is "  +
 									sPos.str() +") >= this->size() (which is " +
