@@ -16,6 +16,7 @@
 # include <iostream>
 # include "./utils/iterators.hpp"
 # include "./utils/util.hpp"
+#include <string>
 
 namespace ft {
 
@@ -147,12 +148,16 @@ public:
 	/* Element access */
 	reference 				at( size_type pos ) {
 		if (pos >= sz)
-			throw std::out_of_range("ft::vector::at():  out of range");
+			throw std::out_of_range("vector::_M_range_check: __n (which is "  +
+									std::to_string(pos) +") >= this->size() (which is " +
+									std::to_string(size()) + ")");
 		return arr[pos];
 	}
 	const_reference 		at( size_type pos ) const {
 		if (pos >= sz)
-			throw std::out_of_range("ft::vector::at():  out of range");
+			throw std::out_of_range("vector::_M_range_check: __n (which is "  +
+									std::to_string(pos) +") >= this->size() (which is " +
+									std::to_string(size()) + ")");
 		return arr[pos];
 	}
 	reference 				operator[]( size_type pos ) { return (arr[pos]); }

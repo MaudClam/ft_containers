@@ -12,9 +12,6 @@
 
 #include <iostream>
 #include <string>
-//#include <stdexcept>
-//#include <exception>
-//#include <new>
 #include <vector>
 #include <set>
 #include "../vector.hpp"
@@ -135,70 +132,124 @@ int	main(void) {
 //		print("v1: ", NOENDL); print(v1, NOENDL);
 //		print("v2: ", NOENDL); print(v2);
 //	}
-//	{
-//		print("==== VECTOR TESTING FUNCTIONS ====\n");
-//
-//		ft::vector<T1> v;
-//		print("ft::vector<T1> v;");
-//		v.assign(9, '*');
-//		print("v.assign(9, '*');");
-//		print("v: ", NOENDL); print(v);
-//
-//		ft::vector<T1> v1(9, '#');
-//		print("ft::vector<T1> v1(9, '#');");
-//		print("v1: ", NOENDL); print(v1, NOENDL);
-//		v1.assign(++++v.begin(), ----v.end());
-//		print("v1.assign(++++v.begin(), ----v.end());");
-//		print("v1: ", NOENDL); print(v1);
-//
-//		ft::vector<T> v2;
-//		print("ft::vector<T> v2;");
-//		for (int i = 1; i <= 9; ++i) v2.push_back(i);
-//		print("for (int i = 1; i <= 9; ++i) v2.push_back(i);");
-//		print("v2: ", NOENDL); print(v2, NOENDL);
-//		print("v2.at(6) = ", NOENDL); print(v2.at(6));
-//		print("try { v2.at(11); } catch (const std::exception& e) {");
-//		print("\tstd::cout << e.what() << std::endl; }");
-//		try { v2.at(11); } catch (const std::exception& e) {
-//			std::cout << (DBG ? "" : OUT_STYLE) << e.what() << (DBG ? "" : NORM_STYLE) << std::endl; }
-//		v2.at(0) = 99;
-//		print("v2.at(0) = 99;");
-//		print("v2: ", NOENDL); print(v2, NOENDL);
-//	}
-//	{
-//		print("\n==== namespace std, STL lib\n");
-//
-//		std::vector<T1> v;
-//		print("std::vector<T1> v;");
-//		v.assign(9, '*');
-//		print("v.assign(9, '*');");
-//		print("v: ", NOENDL); print(v);
-//
-//		std::vector<T1> v1(9, '#');
-//		print("std::vector<T1> v1(9, '#');");
-//		print("v1: ", NOENDL); print(v1, NOENDL);
-//		v1.assign(++++v.begin(), ----v.end());
-//		print("v1.assign(++++v.begin(), ----v.end());");
-//		print("v1: ", NOENDL); print(v1);
-//	}
+	{
+		print("==== VECTOR TESTING FUNCTIONS ====\n");
+
+		ft::vector<T1> v;
+		print("ft::vector<T1> v;");
+		v.assign(9, '*');
+		print("v.assign(9, '*');");
+		print("v: ", NOENDL); print(v);
+
+		ft::vector<T1> v1(9, '#');
+		print("ft::vector<T1> v1(9, '#');");
+		print("v1: ", NOENDL); print(v1, NOENDL);
+		v1.assign(++++v.begin(), ----v.end());
+		print("v1.assign(++++v.begin(), ----v.end());");
+		print("v1: ", NOENDL); print(v1);
+
+		ft::vector<T> v2;
+		print("ft::vector<T> v2;");
+		for (int i = 0; i <= 9; ++i) v2.push_back(i);
+		print("for (int i = 0; i <= 9; ++i) v2.push_back(i);");
+		print("v2: ", NOENDL); print(v2);
+
+		v2.pop_back();;
+		print("v2.pop_back();");
+		print("v2: ", NOENDL); print(v2);
+		
+		v2[6] = 90009;
+		print("v2[6] = 90009;");
+		print("v2: ", NOENDL); print(v2);
+
+		v2.at(6) = 10001;
+		print("v2.at(6) = 10001;");
+		print("v2: ", NOENDL); print(v2);
+		
+		print("try { v2.at(15) = 10001; } catch (std::out_of_range const& e) {");
+		print("\tstd::cerr << e.what() << std::endl; }");
+		try { v2.at(15) = 10001; } catch (std::out_of_range const& e) {
+			std::cerr	<< (DBG ? "" : OUT_STYLE) << e.what()
+						<< (DBG ? "\n" : NORM_STYLE"\n") << std::endl; }
+		
+		v2.reserve(100);
+		print("v2.reserve(100);");
+		print("v2: ", NOENDL); print(v2);
+		
+		print("try { v2.reserve(v2.max_size() + 1); } catch (std::exception& e) {");
+		print("\tstd::cerr << e.what() << std::endl; }");
+		try { v2.reserve((v2.max_size() + 1)); } catch (std::exception& e) {
+			std::cerr	<< (DBG ? "" : OUT_STYLE) << e.what()
+						<< (DBG ? "\n" : NORM_STYLE"\n") << std::endl; }
+
+		v2.resize(3);
+		print("v2.resize(3);");
+		print("v2: ", NOENDL); print(v2);
+
+		v2.resize(10);
+		print("v2.resize(10);");
+		print("v2: ", NOENDL); print(v2);
+
+	}
+	{
+		print("==== namespace std, STL lib\n");
+		
+		std::vector<T1> v;
+		print("std::vector<T1> v;");
+		v.assign(9, '*');
+		print("v.assign(9, '*');");
+		print("v: ", NOENDL); print(v);
+
+		std::vector<T1> v1(9, '#');
+		print("std::vector<T1> v1(9, '#');");
+		print("v1: ", NOENDL); print(v1, NOENDL);
+		v1.assign(++++v.begin(), ----v.end());
+		print("v1.assign(++++v.begin(), ----v.end());");
+		print("v1: ", NOENDL); print(v1);
 
 		std::vector<T> v2;
-//		print("std::vector<T> v2;");
-		for (int i = 1; i <= 9; ++i) v2.push_back(i);
+		print("std::vector<T> v2;");
+		for (int i = 0; i <= 9; ++i) v2.push_back(i);
 		print("for (int i = 0; i <= 9; ++i) v2.push_back(i);");
-		print("v2: ", NOENDL); print(v2, NOENDL);
-//		print("v2.at(6) = ", NOENDL); print(v2.at(6));
-//		print("try { v2.at(11); } catch (const std::exception& e) {");
-//		print("\tstd::cout << e.what() << std::endl; }");
-//		v2.at(0) = 1;
-//		print("v2: ", NOENDL); print(v2, NOENDL);
+		print("v2: ", NOENDL); print(v2);
 
-		try {
-			v2.at(99);
-		} catch (const std::exception& e) {
-			std::cout << e.what() << '\n'; }
+		v2.pop_back();;
+		print("v2.pop_back();");
+		print("v2: ", NOENDL); print(v2);
+		
+		v2[6] = 90009;
+		print("v2[6] = 90009;");
+		print("v2: ", NOENDL); print(v2);
 
-//	}
+		v2.at(6) = 10001;
+		print("v2.at(6) = 10001;");
+		print("v2: ", NOENDL); print(v2);
+		
+		print("try { v2.at(15) = 10001; } catch (std::out_of_range const& e) {");
+		print("\tstd::cerr << e.what() << std::endl; }");
+		try { v2.at(15) = 10001; } catch (std::out_of_range const& e) {
+			std::cerr	<< (DBG ? "" : OUT_STYLE) << e.what()
+						<< (DBG ? "\n" : NORM_STYLE"\n") << std::endl; }
+		
+		v2.reserve(100);
+		print("v2.reserve(100);");
+		print("v2: ", NOENDL); print(v2);
+		
+		print("try { v2.reserve(v2.max_size() + 1); } catch (std::exception& e) {");
+		print("\tstd::cerr << e.what() << std::endl; }");
+		try { v2.reserve((v2.max_size() + 1)); } catch (std::exception& e) {
+			std::cerr	<< (DBG ? "" : OUT_STYLE) << e.what()
+						<< (DBG ? "\n" : NORM_STYLE"\n") << std::endl; }
+
+		v2.resize(3);
+		print("v2.resize(3);");
+		print("v2: ", NOENDL); print(v2);
+
+		v2.resize(10);
+		print("v2.resize(10);");
+		print("v2: ", NOENDL); print(v2);
+
+	}
 	return 0;
 }
 
