@@ -54,84 +54,84 @@ void	print(U& var, bool endl = true) {
 }
 
 int	main(void) {
-//	{
-//		print("==== VECTOR TESTING CONSTRUCTORS AND operator=() ====\n");
-//
-//		ft::vector<T> v;
-//		print("ft::vector<T> v;");
-//		print("v: ", NOENDL); print(v);
-//
-//		std::allocator<T1> alloc;
-//		print("std::allocator<T1> alloc;");
-//		ft::vector<T> v1(alloc);
-//		print("ft::vector<T> v1(alloc);");
-//		print("v1: ", NOENDL); print(v1);
-//
-//		ft::vector<T> v2(9, 717);
-//		print("ft::vector<T> v2(9, 717);");
-//		print("v2: ", NOENDL); print(v2);
-//
-//		ft::set<T> s; s.insert(712); s.insert(812); s.insert(999); s.insert(-212);
-//		print("ft::set<T> s; s.insert(712); s.insert(812); s.insert(919); s.insert(-212);");
-//		ft::set<T>::iterator sIt(s.begin());
-//		print("ft::set<T>::iterator sIt(s.begin());");
-//		ft::vector<T> v3(sIt, ++++++sIt);
-//		print("ft::vector<T> v3(sIt, ++++++sIt);");
-//		print("v3: ", NOENDL); print(v3);
-//
-//		ft::vector<T> v4(v3);
-//		print("ft::vector<T> v4(v3);");
-//		print("v4: ", NOENDL); print(v4);
-//
-//		v2 = v4;
-//		print("v2 = v4;");
-//		print("v2: ", NOENDL); print(v2, NOENDL);
-//		print("v4: ", NOENDL); print(v4);
-//
-//		v1 = v2;
-//		print("v1 = v2;");
-//		print("v1: ", NOENDL); print(v1, NOENDL);
-//		print("v2: ", NOENDL); print(v2);
-//	}
-//	{
-//		print("==== namespace std, STL lib\n");
-//
-//		std::vector<T> v;
-//		print("std::vector<T> v;");
-//		print("v: ", NOENDL); print(v);
-//
-//		std::allocator<T1> alloc;
-//		print("std::allocator<T1> alloc;");
-//		std::vector<T> v1(alloc);
-//		print("std::vector<T> v1(alloc);");
-//		print("v1: ", NOENDL); print(v1);
-//
-//		std::vector<T> v2(9, 717);
-//		print("std::vector<T> v2(9, 717);");
-//		print("v2: ", NOENDL); print(v2);
-//
-//		std::set<T> s; s.insert(712); s.insert(812); s.insert(999); s.insert(-212);
-//		print("std::set<T> s; s.insert(712); s.insert(812); s.insert(919); s.insert(-212);");
-//		std::set<T>::iterator sIt(s.begin());
-//		print("ft::set<T>::iterator sIt(s.begin());");
-//		std::vector<T> v3(sIt, ++++++sIt);
-//		print("std::vector<T> v3(sIt, ++++++sIt);");
-//		print("v3: ", NOENDL); print(v3);
-//
-//		std::vector<T> v4(v3);
-//		print("std::vector<T> v4(v3);");
-//		print("v4: ", NOENDL); print(v4);
-//
-//		v2 = v4;
-//		print("v2 = v4;");
-//		print("v2: ", NOENDL); print(v2, NOENDL);
-//		print("v4: ", NOENDL); print(v4);
-//
-//		v1 = v2;
-//		print("v1 = v2;");
-//		print("v1: ", NOENDL); print(v1, NOENDL);
-//		print("v2: ", NOENDL); print(v2);
-//	}
+	{
+		print("\n==== VECTOR TESTING CONSTRUCTORS AND operator=() ====\n");
+
+		ft::vector<T> v;
+		print("ft::vector<T> v;");
+		print("v: ", NOENDL); print(v);
+
+		std::allocator<T1> alloc;
+		print("std::allocator<T1> alloc;");
+		ft::vector<T> v1(alloc);
+		print("ft::vector<T> v1(alloc);");
+		print("v1: ", NOENDL); print(v1);
+
+		ft::vector<T> v2(9, 717);
+		print("ft::vector<T> v2(9, 717);");
+		print("v2: ", NOENDL); print(v2);
+
+		ft::set<T> s; s.insert(712); s.insert(812); s.insert(999); s.insert(-212);
+		print("ft::set<T> s; s.insert(712); s.insert(812); s.insert(919); s.insert(-212);");
+		ft::set<T>::iterator sIt(s.begin());
+		print("ft::set<T>::iterator sIt(s.begin());");
+		ft::vector<T> v3(sIt, ++++++sIt);
+		print("ft::vector<T> v3(sIt, ++++++sIt);");
+		print("v3: ", NOENDL); print(v3);
+
+		ft::vector<T> v4(v3);
+		print("ft::vector<T> v4(v3);");
+		print("v4: ", NOENDL); print(v4);
+
+		v2 = v4;
+		print("v2 = v4;");
+		print("v2: ", NOENDL); print(v2, NOENDL);
+		print("v4: ", NOENDL); print(v4);
+
+		v1 = v2;
+		print("v1 = v2;");
+		print("v1: ", NOENDL); print(v1, NOENDL);
+		print("v2: ", NOENDL); print(v2);
+	}
+	{
+		print("==== namespace std, STL lib\n");
+
+		std::vector<T> v;
+		print("std::vector<T> v;");
+		print("v: ", NOENDL); print(v);
+
+		std::allocator<T1> alloc;
+		print("std::allocator<T1> alloc;");
+		std::vector<T> v1(alloc);
+		print("std::vector<T> v1(alloc);");
+		print("v1: ", NOENDL); print(v1);
+
+		std::vector<T> v2(9, 717);
+		print("std::vector<T> v2(9, 717);");
+		print("v2: ", NOENDL); print(v2);
+
+		std::set<T> s; s.insert(712); s.insert(812); s.insert(999); s.insert(-212);
+		print("std::set<T> s; s.insert(712); s.insert(812); s.insert(919); s.insert(-212);");
+		std::set<T>::iterator sIt(s.begin());
+		print("ft::set<T>::iterator sIt(s.begin());");
+		std::vector<T> v3(sIt, ++++++sIt);
+		print("std::vector<T> v3(sIt, ++++++sIt);");
+		print("v3: ", NOENDL); print(v3);
+
+		std::vector<T> v4(v3);
+		print("std::vector<T> v4(v3);");
+		print("v4: ", NOENDL); print(v4);
+
+		v2 = v4;
+		print("v2 = v4;");
+		print("v2: ", NOENDL); print(v2, NOENDL);
+		print("v4: ", NOENDL); print(v4);
+
+		v1 = v2;
+		print("v1 = v2;");
+		print("v1: ", NOENDL); print(v1, NOENDL);
+		print("v2: ", NOENDL); print(v2);
+	}
 	{
 		print("==== VECTOR TESTING FUNCTIONS ====\n");
 
@@ -188,6 +188,10 @@ int	main(void) {
 
 		v2.resize(10);
 		print("v2.resize(10);");
+		print("v2: ", NOENDL); print(v2);
+		
+		v2.clear();
+		print("v2.clear();");
 		print("v2: ", NOENDL); print(v2);
 
 	}
@@ -247,6 +251,10 @@ int	main(void) {
 
 		v2.resize(10);
 		print("v2.resize(10);");
+		print("v2: ", NOENDL); print(v2);
+		
+		v2.clear();
+		print("v2.clear();");
 		print("v2: ", NOENDL); print(v2);
 
 	}
