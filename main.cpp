@@ -17,9 +17,9 @@
 
 #define TRUE	1
 #define FALSE	0
-#define STD		TRUE
+#define STL		FALSE //CREATE A REAL STL EXAMPLE
 
-#if STD //CREATE A REAL STL EXAMPLE
+#if STL //CREATE A REAL STL EXAMPLE
 	#include <map>
 	#include <stack>
 	#include <vector>
@@ -32,7 +32,7 @@
 
 #include <stdlib.h>
 
-#define MAX_RAM 2294967296
+#define MAX_RAM 4294967296
 #define BUFFER_SIZE 4096
 struct Buffer
 {

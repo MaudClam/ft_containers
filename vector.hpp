@@ -14,9 +14,10 @@
 # define VECTOR_HPP
 
 # include <iostream>
+# include <string>
+# include <sstream>
 # include "./utils/iterators.hpp"
 # include "./utils/util.hpp"
-#include <string>
 
 namespace ft {
 
@@ -147,17 +148,23 @@ public:
 	
 	/* Element access */
 	reference 				at( size_type pos ) {
-		if (pos >= sz)
+		if (pos >= sz) {
+			std::ostringstream sPos; sPos << pos;
+			std::ostringstream sSize; sSize << size();
 			throw std::out_of_range("vector::_M_range_check: __n (which is "  +
-									std::to_string(pos) +") >= this->size() (which is " +
-									std::to_string(size()) + ")");
+									sPos.str() +") >= this->size() (which is " +
+									sSize.str() + ")");
+		}
 		return arr[pos];
 	}
 	const_reference 		at( size_type pos ) const {
-		if (pos >= sz)
+		if (pos >= sz) {
+			std::ostringstream sPos; sPos << pos;
+			std::ostringstream sSize; sSize << size();
 			throw std::out_of_range("vector::_M_range_check: __n (which is "  +
-									std::to_string(pos) +") >= this->size() (which is " +
-									std::to_string(size()) + ")");
+									sPos.str() +") >= this->size() (which is " +
+									sSize.str() + ")");
+		}
 		return arr[pos];
 	}
 	reference 				operator[]( size_type pos ) { return (arr[pos]); }
@@ -307,15 +314,20 @@ public:
 	
 	iterator 				erase( iterator pos ) {
 		size_type	posNum = posNumber(pos);
-		if (posNum == sz)
-			throw std::out_of_range("ft::vector::insert:  out of range\n");
+		if (pos >= sz) {
+			std::ostringstream sPos; sPos << pos;
+			std::ostringstream sSize; sSize << size();
+			throw std::out_of_range("vector::_M_range_check: __n (which is "  +
+									sPos.str() +") >= this->size() (which is " +
+									sSize.str() + ")");
+		}
 		return ( erase(posNum, 1) );
 	}
 	iterator 				erase( iterator first, iterator last ) {
 		size_type	firstNum = posNumber(first);
 		size_type	lastNum = posNumber(last);
 		if (lastNum < firstNum)
-			throw std::out_of_range("ft::vector::insert:  out of range\n");
+			throw std::out_of_range("vector::_M_range_check: wrong range\n");
 		return ( erase(firstNum, lastNum - firstNum) );
 	}
 	void 					push_back( const value_type& value ) {
@@ -453,7 +465,11 @@ protected:
 		}
 		if (it == pos)
 			return (count);
-		throw std::out_of_range("ft::vector::insert:  out of range\n");
+		std::ostringstream sPos; sPos << pos;
+		std::ostringstream sSize; sSize << size();
+		throw std::out_of_range("vector::_M_range_check: __n (which is "  +
+								sPos.str() +") >= this->size() (which is " +
+								sSize.str() + ")");
 	}
 	iterator				erase( size_type pos, size_type distance ) {
 		value_type*	clone = arrCopying(cap, 0, 0);
