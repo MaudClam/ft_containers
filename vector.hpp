@@ -317,9 +317,7 @@ public:
 		if (posNum == sz) {
 			std::ostringstream sPos; sPos << posNum;
 			std::ostringstream sSize; sSize << size();
-			throw std::out_of_range("vector::_M_range_check: __n (which is "  +
-									sPos.str() +") >= this->size() (which is " +
-									sSize.str() + ")");
+			throw std::out_of_range("vector::_M_range_check: out of range");
 		}
 		return ( erase(posNum, 1) );
 	}
@@ -465,11 +463,7 @@ protected:
 		}
 		if (it == pos)
 			return (count);
-		std::ostringstream sPos; sPos << pos;
-		std::ostringstream sSize; sSize << size();
-		throw std::out_of_range("vector::_M_range_check: __n (which is "  +
-								sPos.str() +") >= this->size() (which is " +
-								sSize.str() + ")");
+		throw std::out_of_range("vector::_M_range_check: out of range");
 	}
 	iterator				erase( size_type pos, size_type distance ) {
 		value_type*	clone = arrCopying(cap, 0, 0);
