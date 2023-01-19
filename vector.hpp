@@ -101,20 +101,20 @@ public:
 		if (cap < other.sz) {
 			value_type*	newArr = NULL;
 			if (other.cap != 0)
-				newArr = alloc.allocate(other.cap);
+				newArr = alloc.allocate(other.sz);
 			try {
 				for (; i < other.sz; ++i)
 					alloc.construct(newArr + i, other.arr[i]);
 			} catch (...) {
 				for (size_type j = 0; j < i; ++j)
 					alloc.destroy(newArr + j);
-				alloc.deallocate(newArr, other.cap);
+				alloc.deallocate(newArr, other.sz);
 				throw ;
 			}
 			killArr(arr, sz, cap);
 			arr = newArr; newArr = NULL;
 			sz = other.sz;
-			cap = other.cap;
+			cap = other.sz;
 		} else {
 			value_type*	clone = arrCopying(cap, 0, 0);
 			clear();
@@ -147,12 +147,12 @@ public:
 	/* Element access */
 	reference 				at( size_type pos ) {
 		if (pos >= sz)
-			throw std::out_of_range("ft::vector::at:  out of range");
+			throw std::out_of_range("ft::vector::at():  out of range");
 		return arr[pos];
 	}
 	const_reference 		at( size_type pos ) const {
 		if (pos >= sz)
-			throw std::out_of_range("ft::vector::at:  out of range");
+			throw std::out_of_range("ft::vector::at():  out of range");
 		return arr[pos];
 	}
 	reference 				operator[]( size_type pos ) { return (arr[pos]); }
