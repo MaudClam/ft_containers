@@ -236,6 +236,10 @@ public:
 	/* Observers */
 	key_compare 			key_comp() const { return (compare); }
 	value_compare 			value_comp() const { return (compare); };
+//protected:
+	/* Several internal functions */
+	void					printIteratively(void) { tree.printTreeIteratively(false); }
+	void					printRecursively(void) { tree.printTreeRecursively(); }
 }; /* class set end */
 
 /* Set non-member functions */

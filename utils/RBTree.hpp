@@ -13,14 +13,21 @@
 #ifndef RBTREE_HPP
 # define RBTREE_HPP
 
+# include <iostream>
+# include "util.hpp"
+
+#define REDC		"\033[31m"
+#define YELLOW		"\033[1;33m"
+#define BLUE		"\033[1;34m"
+#define GREEN		"\033[1;32m"
+#define GRAY		"\033[2m"
+#define DEFAULT		"\033[0m"
+
 # define RED	false
 # define BLACK	true
 # define LEFT	false
 # define RIGHT	true
-# define INDENT	":   "
-
-# include <iostream>
-# include "util.hpp"
+# define INDENT	"\033[2m:   \033[0m"
 
 namespace ft {
 
@@ -44,8 +51,8 @@ template<typename T>
 std::ostream& operator<<(std::ostream& o, ft::RBSize<T>& size) {
 	o 	<<	"Size: " << size.size << ". "
 		<< size.nodes << " nodes, "
-		<< size.reds << " REDs, "
-		<< size.blacks << " BLACKs. "
+		<< REDC << size.reds << " REDs, " << DEFAULT
+		<< GRAY << size.blacks << " BLACKs. " << DEFAULT
 		<< (size.is_unsorted ? "Tree is unsorted" : "Tree is sorted. ");
 	return o;
 }
@@ -109,7 +116,9 @@ struct RBNode {
 
 template<typename T>
 std::ostream&		operator<<(std::ostream& o, ft::RBNode<T>& node) {
-	o << *node.value;// << (node.color == RED ? ":R" : ":B");
+	o 	<< (node.color == RED ? REDC : GRAY)
+		<< node.value
+		<< DEFAULT;
 	return o;
 }
 
@@ -543,10 +552,10 @@ private:
 				size.reds++;
 			else
 				size.blacks++;
-			if (node->right == NULL)
-				size.blacks++;
-			if (node->left == NULL)
-				size.blacks++;
+//			if (node->right == NULL)
+//				size.blacks++;
+//			if (node->left == NULL)
+//				size.blacks++;
 		}
 	}
 	void			treeBalanceCounter_reset(void) {

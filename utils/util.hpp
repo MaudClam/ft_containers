@@ -182,6 +182,12 @@ class T2
 }; /* struct pair end */
 /* Non-member functions */
 template <class T1, class T2>
+std::ostream&		operator<<(std::ostream& o, ft::pair<T1,T2>& pair) {
+	o 	<< pair.first << " " << pair.second;
+	return o;
+}
+
+template <class T1, class T2>
 pair<T1,T2>		make_pair(T1 x, T2 y) {
 	return (pair<T1,T2>(x, y));
 }

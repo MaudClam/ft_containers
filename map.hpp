@@ -280,7 +280,7 @@ public:
 	key_compare 			key_comp() const { return (k_comp); }
 	value_compare 			value_comp() const { return (compare); };
 
-protected:
+//protected:
 	/* Several internal functions */
 	void					printIteratively(void) { tree.printTreeIteratively(false); }
 	void					printRecursively(void) { tree.printTreeRecursively(); }
