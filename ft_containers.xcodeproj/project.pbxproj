@@ -49,7 +49,8 @@
 		660C5EA2296D8D6A006E0EA5 /* ft_containers */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ft_containers; sourceTree = BUILT_PRODUCTS_DIR; };
 		661998C9296B2619004B9182 /* set.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = set.hpp; sourceTree = "<group>"; };
 		663F0719295B37DB0092C0FD /* vector.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = vector.hpp; sourceTree = "<group>"; };
-		6658008C297B17B300C85779 /* tmp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = tmp.cpp; sourceTree = "<group>"; };
+		6658008D297BFF9500C85779 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		6658008E297BFFA800C85779 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		666F42712962449F0019A52A /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		666F4274296249A90019A52A /* stack.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = stack.hpp; sourceTree = "<group>"; };
 		66B64D1A297ABE6100AE6184 /* time_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = time_test.cpp; sourceTree = "<group>"; };
@@ -109,17 +110,18 @@
 		A05E19AE295880A40007B949 = {
 			isa = PBXGroup;
 			children = (
-				6658008C297B17B300C85779 /* tmp.cpp */,
-				66D2BA172978036A0058367F /* tests */,
-				661998C9296B2619004B9182 /* set.hpp */,
+				660C5EA2296D8D6A006E0EA5 /* ft_containers */,
+				6658008D297BFF9500C85779 /* Makefile */,
+				66B64D1F297ABF4400AE6184 /* time_test */,
+				66D2BA1E297803EA0058367F /* vector_test */,
 				666F42712962449F0019A52A /* main.cpp */,
 				A00C59E22958856500BA3926 /* map.hpp */,
+				661998C9296B2619004B9182 /* set.hpp */,
 				666F4274296249A90019A52A /* stack.hpp */,
 				663F0719295B37DB0092C0FD /* vector.hpp */,
+				6658008E297BFFA800C85779 /* README.md */,
+				66D2BA172978036A0058367F /* tests */,
 				A00C59CD2958849600BA3926 /* utils */,
-				660C5EA2296D8D6A006E0EA5 /* ft_containers */,
-				66D2BA1E297803EA0058367F /* vector_test */,
-				66B64D1F297ABF4400AE6184 /* time_test */,
 			);
 			sourceTree = "<group>";
 		};

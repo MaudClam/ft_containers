@@ -17,7 +17,9 @@
 
 #define TRUE	1
 #define FALSE	0
-#define STL		FALSE //CREATE A REAL STL EXAMPLE
+#ifndef STL
+# define STL	FALSE //CREATE A REAL STL EXAMPLE
+#endif
 
 #if STL //CREATE A REAL STL EXAMPLE
 	#include <map>
