@@ -73,10 +73,8 @@ int	main(void) {
 
 		ft::set<T> s; s.insert(712); s.insert(812); s.insert(999); s.insert(-212);
 		print("ft::set<T> s; s.insert(712); s.insert(812); s.insert(919); s.insert(-212);");
-		ft::set<T>::iterator sIt(s.begin());
-		print("ft::set<T>::iterator sIt(s.begin());");
-		ft::vector<T> v3(sIt, ++++++sIt);
-		print("ft::vector<T> v3(sIt, ++++++sIt);");
+		ft::vector<T> v3(s.begin(), s.end());
+		print("ft::vector<T> v3(s.begin(), s.end());");
 		print("v3: ", NOENDL); print(v3);
 
 		ft::vector<T> v4(v3);
@@ -112,10 +110,8 @@ int	main(void) {
 
 		std::set<T> s; s.insert(712); s.insert(812); s.insert(999); s.insert(-212);
 		print("std::set<T> s; s.insert(712); s.insert(812); s.insert(919); s.insert(-212);");
-		std::set<T>::iterator sIt(s.begin());
-		print("ft::set<T>::iterator sIt(s.begin());");
-		std::vector<T> v3(sIt, ++++++sIt);
-		print("std::vector<T> v3(sIt, ++++++sIt);");
+		std::vector<T> v3(s.begin(), s.end());
+		print("std::vector<T> v3(s.begin(), s.end());");
 		print("v3: ", NOENDL); print(v3);
 
 		std::vector<T> v4(v3);
@@ -144,8 +140,8 @@ int	main(void) {
 		ft::vector<T1> v1(9, '#');
 		print("ft::vector<T1> v1(9, '#');");
 		print("v1: ", NOENDL); print(v1, NOENDL);
-		v1.assign(++++v.begin(), ----v.end());
-		print("v1.assign(++++v.begin(), ----v.end());");
+		v1.assign(++v.begin(), --v.end());
+		print("v1.assign(++v.begin(), --v.end());");
 		print("v1: ", NOENDL); print(v1);
 
 		ft::vector<T> v2;
@@ -207,8 +203,8 @@ int	main(void) {
 		std::vector<T1> v1(9, '#');
 		print("std::vector<T1> v1(9, '#');");
 		print("v1: ", NOENDL); print(v1, NOENDL);
-		v1.assign(++++v.begin(), ----v.end());
-		print("v1.assign(++++v.begin(), ----v.end());");
+		v1.assign(++v.begin(), --v.end());
+		print("v1.assign(++v.begin(), --v.end());");
 		print("v1: ", NOENDL); print(v1);
 
 		std::vector<T> v2;
@@ -263,8 +259,8 @@ int	main(void) {
 		ft::vector<T1> v(9, '*');
 		print("ft::vector<T1> v(9, '*');");
 		print("v: ", NOENDL); print(v, NOENDL);
-		ft::vector<T1>::iterator it(++++++v.begin());
-		print("ft::iterator<T1>::iterator it(++++++v.begin());");
+		ft::vector<T1>::iterator it(v.begin());
+		print("ft::iterator<T1>::iterator it(v.begin());");
 		v.insert(it, '#');
 		print("v.insert(it, '#');");
 		print("v: ", NOENDL); print(v);
