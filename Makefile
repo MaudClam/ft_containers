@@ -1,15 +1,27 @@
 NAME 		= 	test
 
+NAMET		=	time_test
+
+NAMEV		=	vector_test
+
 SRC 		= 	main.cpp
 
+SRCT		=	./tests/time_test.cpp
+
+SRCV		=	./tests/vector_test.cpp
+
 OBJS 		= 	${SRC:.cpp=.o}
+
+OBJST 		= 	${SRCT:.cpp=.o}
+
+OBJSV 		= 	${SRCV:.cpp=.o}
 
 HEADERS		=	map.hpp \
 				set.hpp \
 				stack.hpp \
 				vector.hpp \
 				./utils/iterators.hpp \
-				./RBTree.hpp \
+				./utils/RBTree.hpp \
 				./utils/util.hpp
 
 FLAGS		=	-Wall -Wextra -Werror -std=c++98
@@ -27,14 +39,24 @@ RM 			= 	rm -f
 ${NAME}:		${OBJS}
 				${CPP} ${FLAGS} ${OBJS} -o ${NAME}
 
+${NAMET}:		${OBJST}
+				${CPP} ${FLAGS} ${OBJST} -o ${NAMET}
+
+${NAMEV}:		${OBJSV}
+				${CPP} ${FLAGS} ${OBJSV} -o ${NAMEV}
+
 all:			${NAME}
 
+time:			${NAMET}
+
+vector:			${NAMEV}
+
 clean:
-				${RM} ${OBJS}
+				${RM} ${OBJS} ${OBJST} ${OBJSV}
 
 fclean:			clean
-				${RM} ${NAME}
+				${RM} ${NAME} ${NAMET} ${NAMEV}
 
 re:				fclean all
 
-.PHONY:			all clean fclean re
+.PHONY:			all clean fclean re time vector
