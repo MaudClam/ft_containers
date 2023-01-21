@@ -76,7 +76,11 @@ public:
 	template<class InputIt>	set(InputIt first,
 								InputIt last,
 								const Compare& comp = Compare(),
-								const Allocator& alloc = Allocator() )
+								const Allocator& alloc = Allocator(),
+								typename ft::enable_if<
+									 !ft::is_integral<InputIt>::value,
+									 InputIt
+									 >::type* = 0 )
 							:
 								compare(comp),
 								allocator(alloc),
