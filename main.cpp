@@ -26,10 +26,14 @@
 	#include <stack>
 	#include <vector>
 	namespace ft = std;
+	#define NS	"std"
+
 #else
 	#include "map.hpp"
 	#include "stack.hpp"
 	#include "vector.hpp"
+	#define NS	"ft"
+
 #endif
 
 #include <stdlib.h>
@@ -131,6 +135,6 @@ int main(int argc, char** argv) {
 	{
 		std::cout << *it;
 	}
-	std::cout << std::endl;
+	std::cout << "\nnamespace is " << NS << std::endl;
 	return (0);
 }

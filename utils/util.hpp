@@ -183,7 +183,7 @@ class T2
 /* Non-member functions */
 template <class T1, class T2>
 std::ostream&		operator<<(std::ostream& o, ft::pair<T1,T2>& pair) {
-	o 	<< pair.first << " " << pair.second;
+	o 	<< pair.first << "-" << pair.second;
 	return o;
 }
 

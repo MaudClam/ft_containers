@@ -97,7 +97,11 @@ public:
 	template<class InputIt>	map(InputIt first,
 								InputIt last,
 								const Compare& comp = Compare(),
-								const Allocator& alloc = Allocator() )
+								const Allocator& alloc = Allocator(),
+								typename ft::enable_if<
+									 !ft::is_integral<InputIt>::value,
+									 InputIt
+									 >::type* = 0 )
 							:
 								k_comp(comp),
 								compare(k_comp),
@@ -105,7 +109,7 @@ public:
 								node_alloc(),
 								tree(compare, node_alloc) {
 		for (; first != last; ++first)
-			insert(*first);
+			insert( value_type(first->first,first->second) );
 	}
 							map( const map& other ) { *this = other; }
 							~map() { clear(); }
@@ -137,7 +141,7 @@ public:
 	mapped_type&			at( const key_type& key ) {
 		node_pointer node = findKey(key);
 		if ( node == NULL )
-			throw std::out_of_range("ft::map::at:  key not found");
+			throw std::out_of_range("map::at:  key not found");
 		return ( node->value.second );
 	}
 	const mapped_type&		at( const key_type& key ) const {
@@ -188,7 +192,7 @@ public:
 	template< class InputIt >
 	void 					insert( InputIt first, InputIt last ) {
 		for (; first != last; ++first)
-			insert(*first);
+			insert( value_type(first->first,first->second) );
 	}
 	iterator 				erase( iterator pos ) {
 		if ( pos != end() ) {

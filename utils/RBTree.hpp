@@ -49,11 +49,12 @@ struct RBSize {
 
 template<typename T>
 std::ostream& operator<<(std::ostream& o, ft::RBSize<T>& size) {
-	o 	<<	"Size: " << size.size << ". "
-		<< size.nodes << " nodes, "
-		<< REDC << size.reds << " REDs, " << DEFAULT
-		<< GRAY << size.blacks << " BLACKs. " << DEFAULT
-		<< (size.is_unsorted ? "Tree is unsorted" : "Tree is sorted. ");
+//	o 	<< GRAY <<	"Size: " << size.size << ". "
+	o	<< GRAY << size.nodes << " nodes, "
+		<< size.reds << " REDs, "
+		<< size.blacks << " BLACKs. "
+		<< (size.is_unsorted ? "Tree is unsorted" : "Tree is sorted. ")
+		<< DEFAULT;
 	return o;
 }
 

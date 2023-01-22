@@ -27,8 +27,18 @@
 
 
 #define DBG			false			// Debag mode
-#define BUFFER_SIZE 64
 #define NOENDL		false			// No end of line
+
+std::string	enter_field(std::string prompt) {
+	std::string	field;
+	while (true) {
+		std::cout << prompt;
+		std::getline(std::cin, field, '\n');
+		if (std::cin.eof() == true) exit(0);
+		else if (std::cin.fail() == true || std::cin.bad() == true) exit(-1);
+		if (field.length() != 0) break ; }
+	return (field);
+}
 
 template<typename U>
 void	print(U& var, std::string style = DEFAULT, bool endl = true) {
@@ -139,20 +149,18 @@ void	fill_set(Container& c, Src& src) {
 }
 
 int	main(int ac, char* av[]) {
-	char				filename[256];
-	char*				ptr = filename;
+	std::string			filename;
 	time_t				startTime;
 	time_t				finishTime;
 	std::vector<char>	fileBuffer;
 	size_t				x = 0;
 	size_t				i = 0;
 
-	if (ac == 1) {
-		std::cout << "Enter the name of an existing text file: ";
-		std::cin.get(filename, 256);
-	} else
-		ptr = av[1];
-	std::ifstream fin(ptr);
+	if (ac == 1)
+		filename = enter_field("Enter the name of an existing text file: ");
+	else
+		filename = std::string(av[1]);
+	std::ifstream fin(filename);
 	if (!fin) {
 		std::cout << "File not found of file error.\n";
 		return 1; }
@@ -230,17 +238,13 @@ int	main(int ac, char* av[]) {
 	print_time(startTime, finishTime, "std::set insert()",NOENDL);
 	x = ft_set.size();
 	print("size = ",DEFAULT,NOENDL); print(x,DEFAULT); print("");
-
-	char	word[32];
 	
-	std::cout << GREEN << "Enter the word for search: " << DEFAULT;
-	std::cin.get(word, 32);
-	std::string sword(word);
+	std::string word = enter_field("Enter the word for search: ");
 	print("");
 	
 	i = 0; x = ft_vector.size();
 	startTime = clock();
-	while (i < x && sword != ft_vector[i]) ++i;
+	while (i < x && word != ft_vector[i]) ++i;
 	finishTime = clock();
 	print_time(startTime, finishTime, " ft::vector finding",NOENDL);
 	print("size = ",DEFAULT,NOENDL); print(x,DEFAULT,NOENDL);
@@ -249,7 +253,7 @@ int	main(int ac, char* av[]) {
 
 	i = 0; x = std_vector.size();
 	startTime = clock();
-	while (i < x && sword != std_vector[i]) ++i;
+	while (i < x && word != std_vector[i]) ++i;
 	finishTime = clock();
 	print_time(startTime, finishTime, "std::vector finding",NOENDL);
 	print("size = ",DEFAULT,NOENDL); print(x,DEFAULT,NOENDL);
@@ -258,7 +262,7 @@ int	main(int ac, char* av[]) {
 
 	i = 0; x = ft_stack.size();
 	startTime = clock();
-	while (i < x && sword != ft_stack.top()) {
+	while (i < x && word != ft_stack.top()) {
 		ft_stack.pop(); ++i; }
 	finishTime = clock();
 	print_time(startTime, finishTime, " ft::stack finding",NOENDL);
@@ -266,7 +270,7 @@ int	main(int ac, char* av[]) {
 
 	i = 0; x = std_stack.size();
 	startTime = clock();
-	while (i < x && sword != std_stack.top()) {
+	while (i < x && word != std_stack.top()) {
 		std_stack.pop(); ++i; }
 	finishTime = clock();
 	print_time(startTime, finishTime, "std::stack finding",NOENDL);
@@ -274,28 +278,28 @@ int	main(int ac, char* av[]) {
 
 	x = ft_map.size();
 	startTime = clock();
-	ft_map.find(sword);
+	ft_map.find(word);
 	finishTime = clock();
 	print_time(startTime, finishTime, " ft::map find()",NOENDL);
 	print("size = ",DEFAULT,NOENDL); print(x,DEFAULT);
 
 	x = std_map.size();
 	startTime = clock();
-	std_map.find(sword);
+	std_map.find(word);
 	finishTime = clock();
 	print_time(startTime, finishTime, "std::map find()",NOENDL);
 	print("size = ",DEFAULT,NOENDL); print(x,DEFAULT); print("");
 
 	x = ft_set.size();
 	startTime = clock();
-	ft_set.find(sword);
+	ft_set.find(word);
 	finishTime = clock();
 	print_time(startTime, finishTime, " ft::set find()",NOENDL);
 	print("size = ",DEFAULT,NOENDL); print(x,DEFAULT);
 
 	x = std_set.size();
 	startTime = clock();
-	std_set.find(sword);
+	std_set.find(word);
 	finishTime = clock();
 	print_time(startTime, finishTime, "std::set find()",NOENDL);
 	print("size = ",DEFAULT,NOENDL); print(x,DEFAULT); print("");
