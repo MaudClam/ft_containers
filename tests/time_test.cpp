@@ -16,6 +16,7 @@
 #include <ctime>
 #include <fstream>
 #include <cctype>
+#include <cstdlib>
 #include <vector>
 #include <stack>
 #include <map>
