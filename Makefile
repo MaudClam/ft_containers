@@ -20,8 +20,6 @@ SRCM		=	./tests/map_test.cpp
 
 SRCSE		=	./tests/set_test.cpp
 
-#OBJJ 		= 	${SRCJ:.cpp=.o}
-
 OBJT 		= 	${SRCT:.cpp=.o}
 
 OBJV 		= 	${SRCV:.cpp=.o}
