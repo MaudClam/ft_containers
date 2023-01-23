@@ -90,6 +90,6 @@ int	main(void) {
 	for (; rit != rEnd; ++rit) {
 		std::cout << OUT_STYLE << *rit << NORM_STYLE << " "; }
 	size_t x = s.size();
-	print("size = ",NOENDL); print(x);
+	print("size = ",NOENDL); print(x); print("");
 	return 0;
 }

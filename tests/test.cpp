@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   @filename.c@                                       :+:      :+:    :+:   */
+/*   test.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mclam <mclam@student.42wolfsburg.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -29,9 +29,9 @@
 	#define NS	"std"
 
 #else
-	#include "map.hpp"
-	#include "stack.hpp"
-	#include "vector.hpp"
+	#include "../map.hpp"
+	#include "../stack.hpp"
+	#include "../vector.hpp"
 	#define NS	"ft"
 
 #endif

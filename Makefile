@@ -1,3 +1,5 @@
+NAME		=	test time vector stack map set
+
 NAMEJ 		= 	test
 
 NAMET		=	time_test
@@ -10,7 +12,7 @@ NAMEM		=	map_test
 
 NAMESE		=	set_test
 
-SRCJ 		= 	main.cpp
+SRCJ 		= 	./tests/test.cpp
 
 SRCT		=	./tests/time_test.cpp
 
@@ -22,7 +24,7 @@ SRCM		=	./tests/map_test.cpp
 
 SRCSE		=	./tests/set_test.cpp
 
-OBJSJ 		= 	${SRCJ:.cpp=.o}
+OBJSJ 		= 	${SRCJ}
 
 OBJST 		= 	${SRCT:.cpp=.o}
 
@@ -49,12 +51,13 @@ CPP			=	c++
 RM 			= 	rm -f
 
 %.o:			%.cpp ${HEADERS}
-				${CPP} -c ${FLAGS} ${TEST} -I. $< -o ${<:.cpp=.o}
+				${CPP} -c ${FLAGS} -I. $< -o ${<:.cpp=.o}
 
 # The flag TEST is taken from the command line, for example:
 # make re TEST="-D STL=TRUE"
+
 ${NAMEJ}:		${OBJSJ}
-				${CPP} ${FLAGS} ${OBJSJ} -o ${NAMEJ}
+				${CPP} ${FLAGS} ${TEST} ${OBJSJ} -o ${NAMEJ}
 
 ${NAMET}:		${OBJST}
 				${CPP} ${FLAGS} ${OBJST} -o ${NAMET}
@@ -71,7 +74,7 @@ ${NAMEM}:		${OBJSM}
 ${NAMESE}:		${OBJSSE}
 				${CPP} ${FLAGS} ${OBJSSE} -o ${NAMESE}
 
-all:			test time vector stack map set
+all:			${NAME}
 
 test:			${NAMEJ}
 
@@ -86,11 +89,11 @@ map:			${NAMEM}
 set:			${NAMESE}
 
 clean:
-				${RM} ${OBJSJ} ${OBJST} ${OBJSV} ${OBJSS} ${OBJSM} ${OBJSSE}
+				${RM} ${OBJST} ${OBJSV} ${OBJSS} ${OBJSM} ${OBJSSE}
 
 fclean:			clean
 				${RM} ${NAMEJ} ${NAMET} ${NAMEV} ${NAMES} ${NAMEM} ${NAMESE}
 
 re:				fclean all
 
-.PHONY:			all clean fclean re test time vector stack map set
+.PHONY:			all clean fclean re time vector stack map set
