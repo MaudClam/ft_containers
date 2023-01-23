@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 #include <ctime>
+#include <cstdlib>
 #include <vector>
 #include <stack>
 #include <map>

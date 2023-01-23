@@ -161,7 +161,7 @@ int	main(int ac, char* av[]) {
 		filename = enter_field("Enter the name of an existing text file: ");
 	else
 		filename = std::string(av[1]);
-	std::ifstream fin(filename);
+	std::ifstream fin(filename.c_str());
 	if (!fin) {
 		std::cout << "File not found of file error.\n";
 		return 1; }
